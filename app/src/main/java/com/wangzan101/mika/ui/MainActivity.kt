@@ -201,13 +201,15 @@ internal fun openInBrowser(context: Context, url: String) {
 internal fun <T> firstThatStarts(candidates: List<T>, start: (T) -> Boolean): Boolean = candidates.any(start)
 
 /**
- * 页面切换:对话页是根,侧栏和设置等入口把页面压进 [NavStack],返回键和页面上的返回按钮都走 [NavStack.back]。
+ * 页面切换:Easel 工作台是根,对话、内容和自动化配置都压在它上面,返回键和页面上的返回按钮都走 [NavStack.back]。
  * 各页面只通过回调进出,不知道彼此。
  */
 @Composable
 private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activityFix: (Fix) -> Unit,
     requestedConversation: String?, onConversationOpened: () -> Unit) {
     val nav = rememberNavStack()
+    // Easel 自动化中心可以直接落到 Mika 的网页登录设置;普通设置入口仍从设置首页开始。
+    var settingsStartAtWebSites by rememberSaveable { mutableStateOf(false) }
     // 从设置页「重新配对」进来时先回到配对一步
     var setupRepair by rememberSaveable { mutableStateOf(false) }
     // 首次上手正在走哪一步;为空时不在上手流程里。配置模型页从哪儿来就回哪儿去
@@ -236,7 +238,7 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
     LaunchedEffect(requestedConversation) {
         if (requestedConversation != null) {
             app.chat.openConversation(requestedConversation)
-            nav.reset()
+            nav.openChat()
             onConversationOpened()
         }
     }
@@ -257,7 +259,7 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
     fun goOnboarding(step: OnboardingStep?) {
         onboarding = step
         when (step) {
-            // 上手的每一步都直接放在对话页上面一层,做完回到对话页
+            // 上手的每一步都直接放在 Easel 工作台上面一层,做完回到工作台
             OnboardingStep.Welcome -> nav.show(Route.Welcome)
             OnboardingStep.Model -> nav.show(Route.ModelSetup)
             OnboardingStep.Phone -> { setupRepair = false; nav.show(Route.PhoneSetup) }
@@ -305,16 +307,20 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
                 conversations = { ConversationStore.shared(context).list() },
                 conversationChanges = ConversationStore.shared(context).changes,
                 conversationTitle = { ConversationStore.shared(context).title(it) },
-                onEasel = { nav.pushFromDrawer(Route.Easel) },
+                onEasel = { nav.reset() },
                 onPlans = { nav.pushFromDrawer(Route.Plans) },
                 onMemory = { nav.pushFromDrawer(Route.Memory) },
-                onSettings = { nav.pushFromDrawer(Route.Settings) },
+                onSettings = {
+                    settingsStartAtWebSites = false
+                    nav.pushFromDrawer(Route.Settings)
+                },
                 onBrowser = { nav.pushFromDrawer(Route.Browser) },
                 onScreens = { nav.pushFromDrawer(Route.Screens) },
                 onAbout = { nav.pushFromDrawer(Route.About) },
                 updateAvailable = AboutCopy.drawerDot(updateState),
                 reopen = nav.reopenDrawer,
                 onReopened = nav::drawerReopened,
+                onBack = { nav.back() },
             ) { openDrawer ->
                 ChatScreen(
                     vm = app.chat,
@@ -323,7 +329,10 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
                     webOpen = app.tasks.webScreenOpen,
                     reduceMotion = MikaTheme.reduceMotion,
                     onOpenDrawer = openDrawer,
-                    openSettings = { nav.push(Route.Settings) },
+                    openSettings = {
+                        settingsStartAtWebSites = false
+                        nav.push(Route.Settings)
+                    },
                     openRun = { runId = it; nav.push(Route.Run) },
                     phoneSetupNeeded = phoneSetupNeeded && status.builtinShell != BuiltinShellStatus.Running,
                     openPhoneSetup = { onFix(Fix.OpenPhoneSetup) },
@@ -341,13 +350,43 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
             }
         }
         Route.Easel -> EaselScreen(
-            onBack = back,
+            onOpenChat = { nav.openChat() },
             onOpenWorkflow = { nav.push(Route.EaselWorkflow) },
             onOpenCalendar = { nav.push(Route.EaselCalendar) },
             onOpenPublishLog = { nav.push(Route.EaselPublishLog) },
             onOpenMaterials = { nav.push(Route.EaselMaterials) },
             onOpenAttribution = { nav.push(Route.EaselAttribution) },
             onOpenRisk = { nav.push(Route.EaselRisk) },
+            onOpenProfile = { nav.push(Route.EaselProfile) },
+            onOpenAutomation = { nav.push(Route.EaselAutomation) },
+            onOpenSettings = {
+                settingsStartAtWebSites = false
+                nav.push(Route.Settings)
+            },
+            phoneReady = check.phoneReady,
+            modelReady = hasMain,
+            canStartTask = check.canStartTask,
+        )
+        Route.EaselProfile -> EaselProfileScreen(onBack = back)
+        Route.EaselAutomation -> EaselAutomationScreen(
+            phoneReady = check.phoneReady,
+            modelReady = hasMain,
+            canStartTask = check.canStartTask,
+            onOpenPhoneSetup = { nav.push(Route.PhoneSetup) },
+            onOpenModels = { nav.push(Route.Models) },
+            onOpenScreens = { nav.push(Route.Screens) },
+            onOpenMemory = { nav.push(Route.Memory) },
+            onOpenWebSettings = {
+                settingsStartAtWebSites = true
+                nav.push(Route.Settings)
+            },
+            onOpenBrowser = { nav.push(Route.Browser) },
+            onOpenSettings = {
+                settingsStartAtWebSites = false
+                nav.push(Route.Settings)
+            },
+            onOpenAbout = { nav.push(Route.About) },
+            onBack = back,
         )
         Route.EaselWorkflow -> EaselWorkflowScreen(
             onBack = back,
@@ -372,10 +411,15 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
                 onLogoutAll = { WebSites.logoutAll(context) },
             )
             val autonomous by app.approvals.autonomous.collectAsState()
-            SettingsScreen(store, status, release, onFix, onBack = back, onOpenMemory = { nav.push(Route.Memory) },
+            SettingsScreen(
+                store, status, release, onFix,
+                onBack = { settingsStartAtWebSites = false; back() },
+                onOpenMemory = { nav.push(Route.Memory) },
                 onOpenModels = { nav.push(Route.Models) }, webSites = webSites,
                 autonomous = autonomous, onAutonomous = app.approvalControl::setAutonomous,
-                updateVersion = updateState.update?.version, onOpenAbout = { nav.push(Route.About) })
+                updateVersion = updateState.update?.version, onOpenAbout = { nav.push(Route.About) },
+                startAtWebSites = settingsStartAtWebSites,
+            )
         }
         Route.Models -> ModelsScreen(store, onBack = back, onOpenSpeech = { nav.push(Route.SpeechModel) })
         Route.SpeechModel -> SpeechModelScreen(store, onBack = back)

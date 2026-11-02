@@ -8,64 +8,87 @@ import org.junit.Test
 class NavStackTest {
     @Test fun backReturnsToWhereYouCameFrom() {
         val nav = NavStack()
-        assertEquals(Route.Chat, nav.current)
+        assertEquals(Route.Easel, nav.current)
         assertFalse(nav.canGoBack)
         assertFalse(nav.back())
 
-        // 侧栏进记忆,返回回到对话;从设置进记忆,返回回到设置
-        nav.push(Route.Memory)
-        assertTrue(nav.back())
-        assertEquals(Route.Chat, nav.current)
         nav.push(Route.Settings)
         nav.push(Route.Memory)
-        assertEquals(listOf(Route.Chat, Route.Settings, Route.Memory), nav.stack)
-        nav.back()
+        assertEquals(listOf(Route.Easel, Route.Settings, Route.Memory), nav.stack)
+        assertTrue(nav.back())
         assertEquals(Route.Settings, nav.current)
+        nav.back()
+        assertEquals(Route.Easel, nav.current)
     }
 
     @Test fun samePageIsNotPushedTwice() {
         val nav = NavStack()
         nav.push(Route.PhoneSetup)
         nav.push(Route.PhoneSetup)
-        assertEquals(listOf(Route.Chat, Route.PhoneSetup), nav.stack)
+        assertEquals(listOf(Route.Easel, Route.PhoneSetup), nav.stack)
     }
 
-    @Test fun resetAndChatGoBackToTheRoot() {
+    @Test fun easelIsTheRootForChatAndReset() {
         val nav = NavStack(listOf(Route.Settings, Route.Memory))
-        assertEquals(listOf(Route.Chat, Route.Settings, Route.Memory), nav.stack)
-        nav.push(Route.Chat)
-        assertEquals(listOf(Route.Chat), nav.stack)
+        assertEquals(listOf(Route.Easel, Route.Settings, Route.Memory), nav.stack)
+        nav.openChat()
+        assertEquals(listOf(Route.Easel, Route.Chat), nav.stack)
+        assertEquals(Route.Chat, nav.current)
         nav.push(Route.Plans)
         nav.reset()
-        assertEquals(listOf(Route.Chat), nav.stack)
+        assertEquals(listOf(Route.Easel), nav.stack)
     }
 
-    @Test fun restoredStackAlwaysStartsWithChat() {
-        assertEquals(listOf(Route.Chat, Route.Run), NavStack(listOf(Route.Chat, Route.Chat, Route.Run)).stack)
-        assertEquals(listOf(Route.Chat), NavStack(emptyList()).stack)
-    }
-
-    @Test fun backFromAPageOpenedInTheDrawerReopensTheDrawer() {
+    @Test fun pushingEaselResetsToTheRoot() {
         val nav = NavStack()
+        nav.openChat()
+        nav.push(Route.Settings)
+        nav.push(Route.Easel)
+        assertEquals(listOf(Route.Easel), nav.stack)
+        assertFalse(nav.canGoBack)
+    }
+
+    @Test fun restoredStacksAlwaysStartWithEaselAndAvoidDuplicates() {
+        assertEquals(
+            listOf(Route.Easel, Route.Chat, Route.Run),
+            NavStack(listOf(Route.Chat, Route.Chat, Route.Run)).stack,
+        )
+        assertEquals(listOf(Route.Easel), NavStack(emptyList()).stack)
+        assertEquals(
+            listOf(Route.Easel, Route.Chat, Route.Settings),
+            NavStack(listOf(Route.Chat, Route.Easel, Route.Chat, Route.Settings)).stack,
+        )
+    }
+
+    @Test fun backFromAPageOpenedInTheDrawerReopensTheDrawerAtChat() {
+        val nav = NavStack()
+        nav.openChat()
         nav.pushFromDrawer(Route.Settings)
         nav.push(Route.Memory)
         nav.back()
+        assertEquals(Route.Settings, nav.current)
         assertFalse(nav.reopenDrawer)
         nav.back()
+        assertEquals(Route.Chat, nav.current)
         assertTrue(nav.reopenDrawer)
         nav.drawerReopened()
         assertFalse(nav.reopenDrawer)
     }
 
-    @Test fun pagesNotOpenedFromTheDrawerReturnToChatOnly() {
+    @Test fun pagesNotOpenedFromTheDrawerReturnToChatThenEasel() {
         val nav = NavStack()
+        nav.openChat()
         nav.push(Route.Settings)
         nav.back()
+        assertEquals(Route.Chat, nav.current)
         assertFalse(nav.reopenDrawer)
+        nav.back()
+        assertEquals(Route.Easel, nav.current)
     }
 
-    @Test fun openingAConversationDoesNotReopenTheDrawer() {
+    @Test fun openingAConversationClearsDrawerReturnState() {
         val nav = NavStack()
+        nav.openChat()
         nav.pushFromDrawer(Route.Plans)
         nav.reset()
         assertFalse(nav.reopenDrawer)

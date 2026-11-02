@@ -6,7 +6,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.activity.compose.BackHandler
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -239,7 +238,7 @@ fun ChatDrawer(
         }
         Column(Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
             NavEntry(MikaIcons.New, stringResource(R.string.chat_new), enabled = canSwitch, onClick = onNew)
-            NavEntry(MikaIcons.Spark, "内容工作台", onClick = onEasel)
+            NavEntry(MikaIcons.Spark, "Easel 工作台", onClick = onEasel)
             NavEntry(MikaIcons.Clock, stringResource(R.string.drawer_plans), onClick = onPlans)
             NavEntry(MikaIcons.Heart, stringResource(R.string.memory_and_skills), onClick = onMemory)
             NavEntry(MikaIcons.Globe, stringResource(R.string.drawer_browser), onClick = onBrowser)
@@ -493,6 +492,8 @@ fun ChatWithDrawer(
     /** 从侧栏进去的页面刚退回来:当场打开侧栏,回到进去之前的样子。 */
     reopen: Boolean = false,
     onReopened: () -> Unit = {},
+    /** 有上级页面时优先返回上级;返回 false 表示对话页本身就是根。 */
+    onBack: () -> Boolean = { false },
     content: @Composable (openDrawer: () -> Unit) -> Unit,
 ) {
     val drawer = rememberDrawerState(DrawerValue.Closed)
@@ -517,12 +518,14 @@ fun ChatWithDrawer(
         go()
     }
     val open = drawer.targetValue == DrawerValue.Open || drawer.isOpen
-    // 对话页上返回(侧滑)先打开侧栏;侧栏开着时再返回才离开 App(退到后台,和桌面返回一样)。
-    // 对话页里面板、画中画等自己的返回在内层,先于这里处理
-    val activity = LocalContext.current.findActivity()
+    // 侧栏开着时先关侧栏;否则优先回到上级页面。只有对话页作为根时才沿用旧行为:返回打开侧栏,
+    // 再返回离开 App。对话页里的面板、画中画等自己的返回在内层,先于这里处理。
     BackHandler {
-        if (open) activity?.moveTaskToBack(true)
-        else scope.launch { if (reduceMotion) drawer.snapTo(DrawerValue.Open) else drawer.open() }
+        when {
+            open -> scope.launch { if (reduceMotion) drawer.snapTo(DrawerValue.Closed) else drawer.close() }
+            onBack() -> Unit
+            else -> scope.launch { if (reduceMotion) drawer.snapTo(DrawerValue.Open) else drawer.open() }
+        }
     }
     var revision by remember { mutableIntStateOf(0) }
     LaunchedEffect(conversationChanges) { conversationChanges.collect { revision++ } }

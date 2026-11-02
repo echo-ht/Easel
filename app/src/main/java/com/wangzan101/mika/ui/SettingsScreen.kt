@@ -88,12 +88,16 @@ fun SettingsScreen(
     /** 查到的新版本号;有它时「关于 Mika」一行写「x 可更新」带红点。 */
     updateVersion: String? = null,
     onOpenAbout: () -> Unit = {},
+    /** 从 Easel 自动化中心直接进网页登录时,跳过设置首页。 */
+    startAtWebSites: Boolean = false,
 ) {
     val configs by store.configs.collectAsState()
     val roles by store.roles.collectAsState()
     // 开发者选项里的「看图定位已验证」跟着看图模型(看图用主模型时是主模型那条配置)
     val visionConfig = remember(configs, roles) { store.configFor(ModelRole.Vision) }
-    var page by rememberSaveable { mutableStateOf(SettingsPage.Home) }
+    var page by rememberSaveable(startAtWebSites) {
+        mutableStateOf(if (startAtWebSites) SettingsPage.WebSites else SettingsPage.Home)
+    }
     var explaining by remember { mutableStateOf<Problem?>(null) }
 
     fun fix(f: Fix) = if (f == Fix.AddModel) onOpenModels() else onFix(f)

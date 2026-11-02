@@ -4,5 +4,5 @@
     <style name="Theme.Mika" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/mika_bg</item>
     </style>
-    <color name="mika_bg">#F7F7F8</color>
+    <color name="mika_bg">#F4F1EA</color>
 </resources>

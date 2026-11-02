@@ -5,6 +5,28 @@ Android host for Easel. The goal is a phone-only social-content workspace: the
 agent runs on the phone, operates the real apps, creates artifacts locally, and
 publishes without a desktop browser.
 
+## Mobile UI
+
+Easel is the product and the navigation root. The phone app opens on the Easel
+workspace, with four primary destinations: **Workspace**, **Create**,
+**Publish**, and **Settings**.
+
+- **Workspace** is the Easel home: content pulse, quick entries, account
+  profile, recent artifacts and the five-stage workflow.
+- **Create** opens the Mika-powered Agent chat as an Easel capability, not as a
+  second product home. System back returns from chat to the workspace.
+- **Publish** opens the local publishing center, which links back to the
+  calendar, materials and attribution evidence.
+- **Automation center** is the compatibility layer for Mika: phone control,
+  main model, task execution, background screens, memory, skills, web logins,
+  browser and the full Mika settings screen all use the same existing stores.
+  No second copy of automation credentials or login state is created.
+
+The visual system uses Easel's warm paper background, ink-green accent and
+larger cards across the existing Mika screens. The settings tab remains the
+escape hatch to every advanced Mika capability; the automation center exposes
+the common paths in Easel language.
+
 ## What is already wired
 
 - **Android host**: Mika's Compose UI, foreground task service, accessibility
@@ -13,14 +35,14 @@ publishes without a desktop browser.
 - **Easel identity**: `core/src/main/resources/prompts/system/easel.md` adds the
   five-layer content workflow (discover, plan, create, publish, attribute) to
   every run.
-- **Account profile**: `内容工作台 → 账号画像` stores a markdown profile in
+- **Account profile**: `Easel 工作台 → 账号画像` stores a markdown profile in
   `files/easel/profile.md`; the profile is injected into every task's context.
-- **Content library**: `内容工作台 → 内容库` lists files exported by
+- **Content library**: `Easel 工作台 → 素材库` lists files exported by
   `share_file` under `Download/Easel` and opens/shares them with the system.
 - **Content calendar**: the phone keeps plans and a publishing log in app-private
   storage. The Agent uses `content_plan_*` and `content_publish_log_*`; dates are
   validated as real local dates and published records update their plan.
-- **Five-stage workflow**: `内容工作台 → 五层工作流` shows discover, plan,
+- **Five-stage workflow**: `Easel 工作台 → 五层工作流` shows discover, plan,
   create, publish and attribute with live counts from the local calendar and
   publishing log. Each stage links to the next phone screen or copies a ready
   prompt for the Agent.
@@ -36,7 +58,7 @@ publishes without a desktop browser.
   secrets, private network addresses, private paths, identity/phone numbers,
   absolute advertising claims and common medical/financial promises. Evidence
   is masked. This is a checklist, not a platform review or plagiarism check.
-- **Material library**: `内容工作台 → 素材库` imports files from the system picker
+- **Material library**: `Easel 工作台 → 素材库` imports files from the system picker
   into `Download/Easel`, then previews, shares or deletes them. It only reads
   files this app created; it does not scan the rest of the phone.
 - **Card rendering**: `render_card` turns self-contained HTML in `/workspace`
@@ -71,8 +93,9 @@ build while keeping app data. It is suitable for testing, not store publishing.
 
 1. Install the APK on an Android 12+ phone (Android 14+ recommended).
 2. Add a model provider in Settings.
-3. Complete `设置手机操作` (wireless debugging pairing + accessibility).
-4. Open `内容工作台`, fill the account profile, save.
+3. Open `Easel 工作台 → 自动化中心`, then complete `手机自动化`
+   (wireless debugging pairing + accessibility) and connect a main model.
+4. Return to the workspace, open the account profile, and save it.
 5. Start a chat: for example, `帮我写一条小红书笔记并发布`.
 
 `xhs-publish` uses the Xiaohongshu app on the phone. It checks the draft, asks
