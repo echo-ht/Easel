@@ -12,6 +12,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -33,7 +34,7 @@ class EaselContentToolsTest {
             val old = plans[i]
             return old.copy(
                 title = patch.title ?: old.title, platform = patch.platform ?: old.platform,
-                scheduledAt = patch.scheduledAt ?: old.scheduledAt, status = patch.status ?: old.status,
+                scheduledAt = if (patch.clearScheduledAt) null else patch.scheduledAt ?: old.scheduledAt, status = patch.status ?: old.status,
                 notes = patch.notes ?: old.notes, updatedAt = at++,
             ).also { plans[i] = it }
         }
@@ -96,6 +97,10 @@ class EaselContentToolsTest {
         val (_, update) = call("content_plan_update", """{"id":"$id","status":"ready","notes":""}""", port)
         assertEquals("ready", update.content["plan"]!!.jsonObject["status"]!!.jsonPrimitive.content)
         assertEquals(PlanStatus.READY, port.plans.single().status)
+
+        val (_, cleared) = call("content_plan_update", """{"id":"$id","clearScheduledAt":true}""", port)
+        assertTrue(cleared.content["ok"]!!.jsonPrimitive.content.toBoolean())
+        assertNull(port.plans.single().scheduledAt)
     }
 
     @Test fun publishLogMarksItsPlanPublished() = runTest {

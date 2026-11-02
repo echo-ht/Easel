@@ -18,6 +18,7 @@ import com.wangzan101.mika.core.tool.ToolContext
 import com.wangzan101.mika.core.tool.ToolDef
 import com.wangzan101.mika.core.tool.ToolExecution
 import com.wangzan101.mika.core.tool.Verb
+import com.wangzan101.mika.core.tool.bool
 import com.wangzan101.mika.core.tool.fail
 import com.wangzan101.mika.core.tool.int
 import com.wangzan101.mika.core.tool.ok
@@ -163,6 +164,7 @@ internal object ContentPlanUpdate : EaselTool {
             "title" to str("New title, up to 200 characters. Omit to keep."),
             "platform" to str("New platform, up to 40 characters. Omit to keep."),
             "scheduledAt" to str("New slot, YYYY-MM-DD or YYYY-MM-DDTHH:mm. Omit to keep."),
+            "clearScheduledAt" to bool("Set true to remove the current slot. Omit or false to keep it."),
             "status" to str("New stage: ${PlanStatus.names}. Omit to keep."),
             "notes" to str("New notes, up to 2000 characters; empty clears. Omit to keep."),
         ),
@@ -171,14 +173,19 @@ internal object ContentPlanUpdate : EaselTool {
 
     override suspend fun execute(a: Args, ctx: ToolContext): ToolExecution {
         val id = a.str("id", max = 80)!!.trim()
+        val scheduledAt = dateArg(a, "scheduledAt")
+        val clearScheduledAt = a.bool("clearScheduledAt", false)
+        if (clearScheduledAt && scheduledAt != null)
+            throw ArgError("clearScheduledAt", "omit scheduledAt when clearing the slot")
         val patch = ContentPlanPatch(
             title = a.str("title", max = 200)?.trim(),
             platform = a.str("platform", max = 40)?.trim(),
-            scheduledAt = dateArg(a, "scheduledAt"),
+            scheduledAt = scheduledAt,
             status = planStatus(a),
             notes = a.str("notes", min = 0, max = 2000)?.trim(),
+            clearScheduledAt = clearScheduledAt,
         )
-        if (listOf(patch.title, patch.platform, patch.scheduledAt, patch.status, patch.notes).all { it == null })
+        if (listOf(patch.title, patch.platform, patch.scheduledAt, patch.status, patch.notes).all { it == null } && !clearScheduledAt)
             return fail("nothing_to_update", "Give at least one field to change.", recoverable = false)
         val plan = ctx.easelContent!!.updatePlan(id, patch)
             ?: return fail("plan_not_found", "No content plan has id $id.", recoverable = false)

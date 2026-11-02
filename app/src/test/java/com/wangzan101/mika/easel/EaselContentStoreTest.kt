@@ -40,6 +40,10 @@ class EaselContentStoreTest {
         assertEquals(PlanStatus.READY, updated.status)
         assertEquals("", updated.notes)
         assertEquals(updated, EaselContentStore(dir).plans().single())
+
+        val cleared = reopened.updatePlan(plan.id, ContentPlanPatch(clearScheduledAt = true))!!
+        assertNull(cleared.scheduledAt)
+        assertNull(EaselContentStore(dir).plans().single().scheduledAt)
     }
 
     @Test fun publishLogIsNewestFirstAndDeleteWorks() = runTest {

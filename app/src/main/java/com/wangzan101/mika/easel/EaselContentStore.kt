@@ -61,7 +61,7 @@ class EaselContentStore(
             val updated = old.copy(
                 title = patch.title?.trim() ?: old.title,
                 platform = patch.platform?.trim() ?: old.platform,
-                scheduledAt = patch.scheduledAt ?: old.scheduledAt,
+                scheduledAt = if (patch.clearScheduledAt) null else patch.scheduledAt ?: old.scheduledAt,
                 status = patch.status ?: old.status,
                 notes = patch.notes?.trim() ?: old.notes,
                 updatedAt = now(),

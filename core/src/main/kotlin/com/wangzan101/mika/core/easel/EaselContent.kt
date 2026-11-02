@@ -55,6 +55,8 @@ data class ContentPlanPatch(
     val scheduledAt: String? = null,
     val status: PlanStatus? = null,
     val notes: String? = null,
+    /** `scheduledAt` 为 null 时是「不改」；要取消排期时置 true。 */
+    val clearScheduledAt: Boolean = false,
 )
 
 /** 发布日志：发布或失败后留下的事实，可指回内容日历里的计划。 */
