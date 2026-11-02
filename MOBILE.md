@@ -1,7 +1,8 @@
 # Easel Mobile (P2.1 in progress)
 
-This repository is a fork of [Mika](https://github.com/wangzan101/Mika) used as the
-Android host for Easel. The goal is a phone-only social-content workspace: the
+This repository is derived from the upstream phone-agent project by
+[wangzan101](https://github.com/wangzan101) and used as the Android host for
+Easel. The goal is a phone-only social-content workspace: the
 agent runs on the phone, operates the real apps, creates artifacts locally, and
 publishes without a desktop browser.
 
@@ -13,23 +14,23 @@ workspace, with four primary destinations: **Workspace**, **Create**,
 
 - **Workspace** is the Easel home: content pulse, quick entries, account
   profile, recent artifacts and the five-stage workflow.
-- **Create** opens the Mika-powered Agent chat as an Easel capability, not as a
+- **Create** opens the Easel-powered Agent chat as an Easel capability, not as a
   second product home. System back returns from chat to the workspace.
 - **Publish** opens the local publishing center, which links back to the
   calendar, materials and attribution evidence.
-- **Automation center** is the compatibility layer for Mika: phone control,
+- **Automation center** is the compatibility layer for Easel: phone control,
   main model, task execution, background screens, memory, skills, web logins,
-  browser and the full Mika settings screen all use the same existing stores.
+  browser and the full Easel settings screen all use the same existing stores.
   No second copy of automation credentials or login state is created.
 
 The visual system uses Easel's warm paper background, ink-green accent and
-larger cards across the existing Mika screens. The settings tab remains the
-escape hatch to every advanced Mika capability; the automation center exposes
+larger cards across the existing Easel screens. The settings tab remains the
+escape hatch to every advanced Easel capability; the automation center exposes
 the common paths in Easel language.
 
 ## What is already wired
 
-- **Android host**: Mika's Compose UI, foreground task service, accessibility
+- **Android host**: Easel's Compose UI, foreground task service, accessibility
   automation, virtual background display, built-in WebView/CDP, and Alpine
   sandbox (PRoot, Python, Node).
 - **Easel identity**: `core/src/main/resources/prompts/system/easel.md` adds the
@@ -105,7 +106,7 @@ back to the user.
 
 ## Milestones
 
-- M0 complete (internal engineering milestone): phone-only Android host with Mika's accessibility, browser and
+- M0 complete (internal engineering milestone): phone-only Android host with Easel's accessibility, browser and
   sandbox capabilities, plus the Easel identity and content profile.
 - M1 complete: native content calendar and publishing log in app-private files,
   exposed as `content_plan_*` and `content_publish_log_*`.
@@ -132,6 +133,6 @@ back to the user.
 
 ## Licensing
 
-Easel and Mika are Apache-2.0. Mika's APK also ships GPL/LGPL components (PRoot,
+Easel and Easel are Apache-2.0. Easel's APK also ships GPL/LGPL components (PRoot,
 Alpine packages); keep the corresponding-source offer when distributing a
 modified APK. See `LICENSE`, `NOTICE`, and `licenses/THIRD_PARTY_NOTICES.md`.

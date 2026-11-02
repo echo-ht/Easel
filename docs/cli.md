@@ -2,13 +2,13 @@
 
 简体中文 | [English](cli.en.md)
 
-> 从电脑使用 Mika，先看[从电脑使用 Mika](computer.md)：怎么在 CLI + Skill 和 MCP 之间选、怎么连。
+> 从电脑使用 Easel，先看[从电脑使用 Easel](computer.md)：怎么在 CLI + Skill 和 MCP 之间选、怎么连。
 
-CLI 与 MCP 是并列入口,共用手机端的远程任务服务。CLI 调用普通 HTTP 任务 API,不需要 MCP SDK、握手、工具发现或 MCP 客户端配置。Skill 告诉电脑 Agent 怎样使用 CLI、处理追问和报告真实结果;手机上的 Mika 仍负责规划和执行。
+CLI 与 MCP 是并列入口,共用手机端的远程任务服务。CLI 调用普通 HTTP 任务 API,不需要 MCP SDK、握手、工具发现或 MCP 客户端配置。Skill 告诉电脑 Agent 怎样使用 CLI、处理追问和报告真实结果;手机上的 Easel 仍负责规划和执行。
 
 ```mermaid
 flowchart LR
-    Skill["电脑 Agent + Skill"] --> CLI["Mika CLI"]
+    Skill["电脑 Agent + Skill"] --> CLI["Easel CLI"]
     Shell["用户 / Shell 脚本"] --> CLI
     Client["MCP 客户端"] --> MCP
     subgraph Phone["Android 手机 · 同一监听与鉴权"]
@@ -28,19 +28,19 @@ flowchart LR
 
 安装、升级、回退和卸载见 [CLI / Skill 安装指南](computer-install.md)。CLI 与 MCP 通常二选一。手机需要 task API v1,官方 APK 从 v0.1.23 起提供。
 
-只装 Skill 时,下面的 `mika` 代表 `python3 <技能目录>/mika/scripts/mika_cli.py`（Windows 用 `py -3`）。
+只装 Skill 时,下面的 `easel` 代表 `python3 <技能目录>/easel/scripts/easel_cli.py`（Windows 用 `py -3`）。
 
 ## 连接手机
 
-ADB 模式需要 Android platform-tools。数据线或已经配对并连接的无线 ADB 都可以；无线 ADB 需要这台电脑与手机完成配对、连接，并在 `adb devices` 中显示为 `device`。Mika 在手机内为启动助手完成的配对，不等于电脑已配对；它们也不同于下面的直接局域网访问。
+ADB 模式需要 Android platform-tools。数据线或已经配对并连接的无线 ADB 都可以；无线 ADB 需要这台电脑与手机完成配对、连接，并在 `adb devices` 中显示为 `device`。Easel 在手机内为启动助手完成的配对，不等于电脑已配对；它们也不同于下面的直接局域网访问。
 
 ```bash
-mika devices --json
-mika connect --device SERIAL --json
-mika doctor --device SERIAL --json
+easel devices --json
+easel connect --device SERIAL --json
+easel doctor --device SERIAL --json
 ```
 
-只有一个在线设备时可省略 `--device`;也支持已有的 ANDROID_SERIAL 环境变量。多设备不猜目标,连接失败也不切换到另一台手机。`connect` 调用 Mika 写到手机上的官方启动脚本,打开电脑连接并启动所需助手;此动作不提交业务任务。其余命令只读取当前连接。
+只有一个在线设备时可省略 `--device`;也支持已有的 ANDROID_SERIAL 环境变量。多设备不猜目标,连接失败也不切换到另一台手机。`connect` 调用 Easel 写到手机上的官方启动脚本,打开电脑连接并启动所需助手;此动作不提交业务任务。其余命令只读取当前连接。
 
 每次调用重新读取当前令牌、端口和开机编号,申请自己的 `adb forward tcp:0` 临时端口,完成后只删除该转发。令牌只保存在进程内存中,启动脚本的原始输出不转发到终端。CLI 退出不关闭手机服务,也不停止正在执行的任务。
 
@@ -49,7 +49,7 @@ CLI 会处理端口转发，无需照 MCP 步骤手工转发固定端口。拔�
 也可以使用手机设置里显式开启的局域网/私有网络连接:
 
 ```bash
-mika --url http://PHONE:8765 --token-file /path/to/private-token-file doctor --json
+easel --url http://PHONE:8765 --token-file /path/to/private-token-file doctor --json
 ```
 
 令牌文件只包含访问令牌,由用户按私有文件保存。URL 使用服务器根地址或 `/api/v1`,不要填 `/mcp`;不允许 URL 内嵌凭据。CLI 不跟随 HTTP 重定向、不使用环境中的 HTTP 代理。服务器沿用私有网络限制;局域网 HTTP 的链路本身不加密,可使用 ADB 或可信私有组网。
@@ -57,13 +57,13 @@ mika --url http://PHONE:8765 --token-file /path/to/private-token-file doctor --j
 ## 任务命令
 
 ```bash
-mika --device SERIAL task run --goal-file task.txt --json
-mika --device SERIAL task status TASK_ID --json
-mika --device SERIAL task wait TASK_ID --timeout 45 --json
-mika --device SERIAL task answer TASK_ID --text-file answer.txt --json
-mika --device SERIAL task steer TASK_ID --text "补充一下，只整理今天的消息" --json
-mika --device SERIAL task cancel TASK_ID --json
-mika --device SERIAL task list --limit 10 --json
+easel --device SERIAL task run --goal-file task.txt --json
+easel --device SERIAL task status TASK_ID --json
+easel --device SERIAL task wait TASK_ID --timeout 45 --json
+easel --device SERIAL task answer TASK_ID --text-file answer.txt --json
+easel --device SERIAL task steer TASK_ID --text "补充一下，只整理今天的消息" --json
+easel --device SERIAL task cancel TASK_ID --json
+easel --device SERIAL task list --limit 10 --json
 ```
 
 简单文本也可用 `--goal` / `--text`;文件参数为 `-` 时读取标准输入。`run --conversation CONVERSATION_ID` 创建同一远程对话中的下一项任务,`answer` 只回答当前追问。保留现有对话的 mcp- 前缀以兼容已经发出的 ID;这个历史前缀不代表 CLI 走 MCP 协议。
@@ -91,11 +91,11 @@ mika --device SERIAL task list --limit 10 --json
 ## 浏览器任务台
 
 ```bash
-mika ui                      # 打开本机浏览器里的任务台
-mika ui --device SERIAL --no-open
+easel ui                      # 打开本机浏览器里的任务台
+easel ui --device SERIAL --no-open
 ```
 
-`mika ui` 在 `127.0.0.1` 的随机端口起一个只给本机用的页面，用同一套任务命令派任务、看进度、回答追问、追加要求和取消，界面按浏览器语言显示简体中文或英文。链接末尾 `#` 后面是本次启动的会话密钥，浏览器不会把它发给别处；服务端还核对 Host 和 Origin，只接受固定几种操作。它是给人用的交互界面，不支持 `--json`。详见[从电脑使用 Mika](computer.md#电脑任务台mika-ui)。
+`easel ui` 在 `127.0.0.1` 的随机端口起一个只给本机用的页面，用同一套任务命令派任务、看进度、回答追问、追加要求和取消，界面按浏览器语言显示简体中文或英文。链接末尾 `#` 后面是本次启动的会话密钥，浏览器不会把它发给别处；服务端还核对 Host 和 Origin，只接受固定几种操作。它是给人用的交互界面，不支持 `--json`。详见[从电脑使用 Easel](computer.md#电脑任务台easel-ui)。
 
 ## HTTP 契约
 
@@ -119,8 +119,8 @@ mika ui --device SERIAL --no-open
 
 ```bash
 ./gradlew :core:test :core:cliTest :app:testDebugUnitTest :app:assembleDebug
-# Python 可单独运行;指定解释器可用 -PmikaPython=/path/to/python3
-python3 -m unittest discover -s tools/mika/tests -v
+# Python 可单独运行;指定解释器可用 -PeaselPython=/path/to/python3
+python3 -m unittest discover -s tools/easel/tests -v
 ```
 
 纯 JVM 测试覆盖共享服务、API/MCP 互操作、鉴权、状态与原有协议回归。`cliTest`(要 Python 3.10+,不在 `check` 里,需要时显式运行)运行真实 CLI 对 Kotlin HTTP 服务的契约测试(核对 CLI 只请求 `/api/v1`),以及假 ADB、丢响应、令牌变化、端口清理和独立 Skill 目录测试。这些都不需要真机或模型 Key。真机无线断连、手机重启和真实 Agent 执行需要另行验收,不能用这些隔离测试代替。
