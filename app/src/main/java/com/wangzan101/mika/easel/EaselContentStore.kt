@@ -1,9 +1,12 @@
 package com.wangzan101.mika.easel
 
 import android.content.Context
+import com.wangzan101.mika.core.easel.ContentMetric
 import com.wangzan101.mika.core.easel.ContentPlan
 import com.wangzan101.mika.core.easel.ContentPlanPatch
+import com.wangzan101.mika.core.easel.EaselContentDate
 import com.wangzan101.mika.core.easel.EaselContentPort
+import com.wangzan101.mika.core.easel.NewContentMetric
 import com.wangzan101.mika.core.easel.NewContentPlan
 import com.wangzan101.mika.core.easel.NewPublishRecord
 import com.wangzan101.mika.core.easel.PlanStatus
@@ -34,6 +37,7 @@ class EaselContentStore(
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; prettyPrint = true }
     private val calendarFile = File(dir, "calendar.json")
     private val publishFile = File(dir, "publish-log.json")
+    private val metricsFile = File(dir, "metrics.json")
 
     override suspend fun plans(): List<ContentPlan> = withContext(Dispatchers.IO) {
         synchronized(LOCK) { readPlans() }
@@ -113,12 +117,50 @@ class EaselContentStore(
         }
     }
 
+    override suspend fun metrics(limit: Int): List<ContentMetric> = withContext(Dispatchers.IO) {
+        synchronized(LOCK) {
+            readMetrics()
+                .sortedWith(compareByDescending<ContentMetric> { it.capturedAt }.thenByDescending { it.createdAt })
+                .take(limit)
+        }
+    }
+
+    override suspend fun addMetric(input: NewContentMetric): ContentMetric = withContext(Dispatchers.IO) {
+        synchronized(LOCK) {
+            val at = now()
+            val metric = ContentMetric(
+                id = newId(), publishId = input.publishId?.trim()?.ifBlank { null },
+                title = input.title.trim(), platform = input.platform.trim(),
+                capturedAt = EaselContentDate.normalize(input.capturedAt.orEmpty()) ?: localTime(at),
+                views = input.views, likes = input.likes, collects = input.collects,
+                comments = input.comments, shares = input.shares, followers = input.followers,
+                note = input.note.trim(), createdAt = at,
+            )
+            writeMetrics(readMetrics() + metric)
+            metric
+        }
+    }
+
+    override suspend fun deleteMetric(id: String): Boolean = withContext(Dispatchers.IO) {
+        synchronized(LOCK) {
+            val metrics = readMetrics()
+            val kept = metrics.filterNot { it.id == id }
+            if (kept.size == metrics.size) return@synchronized false
+            writeMetrics(kept)
+            true
+        }
+    }
+
     private fun readPlans(): List<ContentPlan> = read(calendarFile, ContentPlan.serializer())
     private fun readPublishes(): List<PublishRecord> = read(publishFile, PublishRecord.serializer())
+    private fun readMetrics(): List<ContentMetric> = read(metricsFile, ContentMetric.serializer())
     private fun writePlans(plans: List<ContentPlan>) = write(calendarFile, ListSerializer(ContentPlan.serializer()), plans)
 
     private fun writePublishes(records: List<PublishRecord>) =
         write(publishFile, ListSerializer(PublishRecord.serializer()), records)
+
+    private fun writeMetrics(metrics: List<ContentMetric>) =
+        write(metricsFile, ListSerializer(ContentMetric.serializer()), metrics)
 
     private fun <T> read(file: File, serializer: kotlinx.serialization.KSerializer<T>): List<T> {
         if (!file.isFile) return emptyList()

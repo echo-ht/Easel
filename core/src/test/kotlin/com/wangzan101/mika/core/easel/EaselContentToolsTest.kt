@@ -20,6 +20,7 @@ class EaselContentToolsTest {
     private class MemoryPort : EaselContentPort {
         val plans = mutableListOf<ContentPlan>()
         val records = mutableListOf<PublishRecord>()
+        val metrics = mutableListOf<ContentMetric>()
         private var at = 1_000L
 
         override suspend fun plans() = plans.toList()
@@ -49,6 +50,16 @@ class EaselContentToolsTest {
                 .also { records += it }
 
         override suspend fun deletePublish(id: String) = records.removeAll { it.id == id }
+
+        override suspend fun metrics(limit: Int) = metrics.sortedByDescending { it.capturedAt }.take(limit)
+
+        override suspend fun addMetric(input: NewContentMetric): ContentMetric =
+            ContentMetric("m${metrics.size + 1}", input.publishId, input.title, input.platform,
+                input.capturedAt ?: "2026-11-02T12:00", input.views, input.likes, input.collects,
+                input.comments, input.shares, input.followers, input.note, at++)
+                .also { metrics += it }
+
+        override suspend fun deleteMetric(id: String) = metrics.removeAll { it.id == id }
     }
 
     private suspend fun call(name: String, body: String, port: EaselContentPort? = MemoryPort()) =
@@ -61,7 +72,8 @@ class EaselContentToolsTest {
         val names = toolDispatcher(FakeScreen()).definitions().map { it.name }
         assertFalse(names.any { it.startsWith("content_plan_") || it.startsWith("content_publish_log_") })
         val withStore = toolDispatcher(FakeScreen(), easelContent = MemoryPort()).definitions().map { it.name }
-        assertEquals(setOf("content_plan_add", "content_plan_list", "content_plan_update", "content_publish_log_add", "content_publish_log_list"),
+        assertEquals(setOf("content_plan_add", "content_plan_list", "content_plan_update", "content_publish_log_add", "content_publish_log_list",
+            "content_metrics_add", "content_metrics_list", "content_metrics_delete", "content_attribution_summary", "content_risk_scan"),
             withStore.filter { it.startsWith("content_") }.toSet())
     }
 
@@ -76,7 +88,8 @@ class EaselContentToolsTest {
     @Test fun capabilityPromptAndDefinitionsFollowThePort() = runTest {
         val d = toolDispatcher(FakeScreen(), easelContent = MemoryPort())
         val names = d.definitions().map { it.name }.toSet()
-        assertTrue(names.containsAll(setOf("content_plan_add", "content_plan_list", "content_plan_update", "content_publish_log_add", "content_publish_log_list")))
+        assertTrue(names.containsAll(setOf("content_plan_add", "content_plan_list", "content_plan_update", "content_publish_log_add", "content_publish_log_list",
+            "content_metrics_add", "content_metrics_list", "content_metrics_delete", "content_attribution_summary", "content_risk_scan")))
         val prompt = d.promptSections(d.definitions()).joinToString("\n")
         assertTrue(prompt.contains("Content calendar and publishing log"))
         assertTrue(prompt.contains("content_plan_add"))
@@ -128,6 +141,62 @@ class EaselContentToolsTest {
         assertNotNull(missing.content["message"])
     }
 
+    @Test fun metricSnapshotsFillFromThePublishRecordAndSummarize() = runTest {
+        val port = MemoryPort()
+        port.addPublish(NewPublishRecord("一条爆款", "xiaohongshu", publishedAt = "2026-11-01T10:00"))
+        val publishId = port.records.single().id
+
+        val (_, added) = call("content_metrics_add",
+            """{"publishId":"$publishId","views":1000,"likes":80,"collects":30,"comments":10,"shares":5,"note":"后台显示"}""", port)
+        assertTrue(added.content["ok"]!!.jsonPrimitive.content.toBoolean())
+        val metric = added.content["metric"]!!.jsonObject
+        assertEquals("一条爆款", metric["title"]!!.jsonPrimitive.content)
+        assertEquals("xiaohongshu", metric["platform"]!!.jsonPrimitive.content)
+        assertEquals(80L, metric["likes"]!!.jsonPrimitive.content.toLong())
+
+        val (_, second) = call("content_metrics_add",
+            """{"publishId":"$publishId","views":2000,"likes":120,"collects":50,"comments":20,"shares":10}""", port)
+        val secondId = second.content["metric"]!!.jsonObject["id"]!!.jsonPrimitive.content
+
+        val (_, list) = call("content_metrics_list", """{"publishId":"$publishId"}""", port)
+        assertEquals(2, list.content["count"]!!.jsonPrimitive.content.toInt())
+
+        val (_, summary) = call("content_attribution_summary", """{"top":1}""", port)
+        assertEquals(2, summary.content["snapshotCount"]!!.jsonPrimitive.content.toInt())
+        assertEquals(1, summary.content["postCount"]!!.jsonPrimitive.content.toInt())
+        val post = summary.content["topPosts"]!!.jsonArray.single().jsonObject
+        assertEquals(120L + 50L * 2 + 20L * 2 + 10L * 3, post["engagement"]!!.jsonPrimitive.content.toLong())
+        assertEquals(115L, post["engagementChange"]!!.jsonPrimitive.content.toLong())
+
+        val (_, deleted) = call("content_metrics_delete", """{"id":"$secondId"}""", port)
+        assertTrue(deleted.content["ok"]!!.jsonPrimitive.content.toBoolean())
+        assertEquals(1, port.metrics.size)
+    }
+
+    @Test fun metricSnapshotNeedsANumberAndAKnownPublishRecord() = runTest {
+        val (_, empty) = call("content_metrics_add", """{"title":"只有标题","platform":"xhs"}""")
+        assertEquals("no_metric", empty.content["error"]?.jsonPrimitive?.content)
+        val (_, missing) = call("content_metrics_add", """{"publishId":"nope","views":1}""")
+        assertEquals("publish_not_found", missing.content["error"]?.jsonPrimitive?.content)
+        val (_, negative) = call("content_metrics_add", """{"title":"x","platform":"xhs","views":-1}""")
+        assertEquals("invalid_arguments", negative.content["error"]?.jsonPrimitive?.content)
+        val port = MemoryPort()
+        port.addPublish(NewPublishRecord("失败", "xhs", PublishStatus.FAILED))
+        val (_, failed) = call("content_metrics_add", """{"publishId":"${port.records.single().id}","views":1}""", port)
+        assertEquals("publish_not_published", failed.content["error"]?.jsonPrimitive?.content)
+    }
+
+    @Test fun riskScanReportsHighAndMediumFindingsWithMaskedEvidence() = runTest {
+        val (_, result) = call("content_risk_scan",
+            """{"platform":"xiaohongshu","text":"加我 13800138000，链接 http://192.168.1.8:8080，效果百分百有效。"}""")
+        assertEquals("high", result.content["level"]!!.jsonPrimitive.content)
+        assertEquals(1, result.content["blockCount"]!!.jsonPrimitive.content.toInt())
+        assertTrue(result.content["warnCount"]!!.jsonPrimitive.content.toInt() >= 2)
+        val encoded = result.content.toString()
+        assertFalse(encoded.contains("13800138000"))
+        assertFalse(encoded.contains("192.168.1.8"))
+    }
+
     @Test fun dateNormalizationAcceptsOnlyRealLocalDates() {
         assertNull(EaselContentDate.normalize("  "))
         assertEquals("2026-11-05", EaselContentDate.normalize("2026-11-05"))
@@ -139,6 +208,6 @@ class EaselContentToolsTest {
     }
 
     private companion object {
-        val WRITE_TOOLS = setOf("content_plan_add", "content_plan_update", "content_publish_log_add")
+        val WRITE_TOOLS = setOf("content_plan_add", "content_plan_update", "content_publish_log_add", "content_metrics_add", "content_metrics_delete")
     }
 }

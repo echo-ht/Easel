@@ -38,6 +38,8 @@ fun EaselWorkflowScreen(
     onOpenCalendar: () -> Unit,
     onOpenPublishCenter: () -> Unit,
     onOpenMaterials: () -> Unit,
+    onOpenAttribution: () -> Unit = {},
+    onOpenRisk: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val clipboard = LocalClipboardManager.current
@@ -119,6 +121,8 @@ fun EaselWorkflowScreen(
             hint = "按平台检查标题、正文、素材和账号，发布后在 App 里核实。",
             action = "打开发布中心",
             onClick = onOpenPublishCenter,
+            secondaryAction = "发布前风控扫描",
+            onSecondary = onOpenRisk,
         )
         StageCard(
             number = 5,
@@ -126,8 +130,8 @@ fun EaselWorkflowScreen(
             count = published,
             countLabel = "条已发布",
             hint = "读回播放、互动和评论，把有效经验写回画像和下一次计划。",
-            action = "查看发布记录",
-            onClick = onOpenPublishCenter,
+            action = "查看数据归因",
+            onClick = onOpenAttribution,
         )
 
         copied?.let {
@@ -156,6 +160,8 @@ private fun StageCard(
     hint: String,
     action: String,
     onClick: () -> Unit,
+    secondaryAction: String? = null,
+    onSecondary: (() -> Unit)? = null,
 ) {
     MikaCard(Modifier.padding(bottom = 10.dp)) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
@@ -171,6 +177,9 @@ private fun StageCard(
             }
             Text(hint, style = MikaType.Caption, color = MikaTheme.colors.ink2)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                if (secondaryAction != null && onSecondary != null) {
+                    TextButton(onClick = onSecondary) { Text(secondaryAction) }
+                }
                 TextButton(onClick = onClick) { Text(action) }
             }
         }

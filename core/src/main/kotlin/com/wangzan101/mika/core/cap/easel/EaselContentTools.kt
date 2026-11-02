@@ -1,9 +1,13 @@
 package com.wangzan101.mika.core.cap.easel
 
+import com.wangzan101.mika.core.easel.ContentMetric
 import com.wangzan101.mika.core.easel.ContentPlan
 import com.wangzan101.mika.core.easel.ContentPlanPatch
+import com.wangzan101.mika.core.easel.EaselAttribution
 import com.wangzan101.mika.core.easel.EaselContentDate
 import com.wangzan101.mika.core.easel.EaselContentPort
+import com.wangzan101.mika.core.easel.EaselRiskScanner
+import com.wangzan101.mika.core.easel.NewContentMetric
 import com.wangzan101.mika.core.easel.NewContentPlan
 import com.wangzan101.mika.core.easel.NewPublishRecord
 import com.wangzan101.mika.core.easel.PlanStatus
@@ -22,11 +26,13 @@ import com.wangzan101.mika.core.tool.Verb
 import com.wangzan101.mika.core.tool.bool
 import com.wangzan101.mika.core.tool.fail
 import com.wangzan101.mika.core.tool.int
+import com.wangzan101.mika.core.tool.num
 import com.wangzan101.mika.core.tool.ok
 import com.wangzan101.mika.core.tool.str
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+
 private fun dateArg(a: Args, name: String): String? {
     val raw = a.str(name, min = 0, max = 32)?.trim().orEmpty()
     return try {
@@ -34,6 +40,10 @@ private fun dateArg(a: Args, name: String): String? {
     } catch (e: IllegalArgumentException) {
         throw ArgError(name, e.message ?: EaselContentDate.FORMAT_HINT)
     }
+}
+
+private fun metricValue(a: Args, name: String, nonNegative: Boolean = true): Long? {
+    return a.long(name, min = if (nonNegative) 0 else Long.MIN_VALUE)
 }
 
 private fun planStatus(a: Args, name: String = "status"): PlanStatus? {
@@ -67,6 +77,22 @@ private fun PublishRecord.json() = buildJsonObject {
     put("publishedAt", publishedAt)
     postUrl?.let { put("postUrl", it) }
     planId?.let { put("planId", it) }
+    put("note", note)
+    put("createdAt", createdAt)
+}
+
+private fun ContentMetric.json() = buildJsonObject {
+    put("id", id)
+    publishId?.let { put("publishId", it) }
+    put("title", title)
+    put("platform", platform)
+    put("capturedAt", capturedAt)
+    views?.let { put("views", it) }
+    likes?.let { put("likes", it) }
+    collects?.let { put("collects", it) }
+    comments?.let { put("comments", it) }
+    shares?.let { put("shares", it) }
+    followers?.let { put("followers", it) }
     put("note", note)
     put("createdAt", createdAt)
 }
@@ -251,8 +277,198 @@ internal object ContentPublishLogList : EaselTool {
     }
 }
 
+internal object ContentMetricsAdd : EaselTool {
+    override val verb = Verb.ContentMetricsAdd
+    override val risk = Risk.Write
+    override val offScreen = true
+    override val def = ToolDef(
+        "content_metrics_add",
+        Prompts.tool("content_metrics_add"),
+        mapOf(
+            "publishId" to str("Optional id from content_publish_log_list. When given, title and platform are filled from that record."),
+            "title" to str("Content title, up to 200 characters. Required when publishId is omitted."),
+            "platform" to str("Platform or channel, up to 40 characters. Required when publishId is omitted."),
+            "capturedAt" to str("Optional capture time, YYYY-MM-DD or YYYY-MM-DDTHH:mm in local time. Default now."),
+            "views" to num("Optional view/read count reported by the platform. Non-negative integer.", 0),
+            "likes" to num("Optional like count. Non-negative integer.", 0),
+            "collects" to num("Optional collect/favorite count. Non-negative integer.", 0),
+            "comments" to num("Optional comment count. Non-negative integer.", 0),
+            "shares" to num("Optional share/repost count. Non-negative integer.", 0),
+            "followers" to num("Optional follower count or net change reported for this post. Integer."),
+            "note" to str("Optional context, up to 2000 characters. Keep ranges and platform wording as observed."),
+        ),
+    )
+
+    override suspend fun execute(a: Args, ctx: ToolContext): ToolExecution {
+        val port = ctx.easelContent!!
+        val publishId = a.str("publishId", min = 0, max = 80)?.trim()?.ifBlank { null }
+        val record = publishId?.let { id -> port.publishLog(Int.MAX_VALUE).firstOrNull { it.id == id } }
+        if (publishId != null && record == null)
+            return fail("publish_not_found", "No publish record has id $publishId.", recoverable = false)
+        if (record != null && record.status != PublishStatus.PUBLISHED)
+            return fail("publish_not_published", "Publish record $publishId is marked failed; metrics need a confirmed publish.", recoverable = false)
+        val title = a.str("title", min = 0, max = 200)?.trim().orEmpty().ifBlank { record?.title.orEmpty() }
+        val platform = a.str("platform", min = 0, max = 40)?.trim().orEmpty().ifBlank { record?.platform.orEmpty() }
+        if (title.isBlank()) throw ArgError("title", "required when publishId is omitted")
+        if (platform.isBlank()) throw ArgError("platform", "required when publishId is omitted")
+        val views = metricValue(a, "views")
+        val likes = metricValue(a, "likes")
+        val collects = metricValue(a, "collects")
+        val comments = metricValue(a, "comments")
+        val shares = metricValue(a, "shares")
+        val followers = metricValue(a, "followers", nonNegative = false)
+        if (listOf(views, likes, collects, comments, shares, followers).all { it == null })
+            return fail("no_metric", "Give at least one of views, likes, collects, comments, shares or followers.", recoverable = false)
+        val metric = port.addMetric(
+            NewContentMetric(
+                publishId = publishId,
+                title = title,
+                platform = platform,
+                capturedAt = dateArg(a, "capturedAt"),
+                views = views,
+                likes = likes,
+                collects = collects,
+                comments = comments,
+                shares = shares,
+                followers = followers,
+                note = a.str("note", min = 0, max = 2000)?.trim().orEmpty(),
+            ),
+        )
+        return ok { put("saved", true); put("metric", metric.json()) }
+    }
+}
+
+internal object ContentMetricsList : EaselTool {
+    override val verb = Verb.ContentMetricsList
+    override val risk = Risk.Read
+    override val concurrency = Concurrency.ParallelSafe
+    override val def = ToolDef(
+        "content_metrics_list",
+        Prompts.tool("content_metrics_list"),
+        mapOf(
+            "publishId" to str("Optional publish record id. Return only snapshots attributed to that post."),
+            "platform" to str("Optional platform filter, case-insensitive."),
+            "limit" to int("Maximum snapshots to return, 1-500. Default 100.", 1, 500),
+        ),
+    )
+
+    override suspend fun execute(a: Args, ctx: ToolContext): ToolExecution {
+        val publishId = a.str("publishId", min = 0, max = 80)?.trim()?.ifBlank { null }
+        val platform = a.str("platform", min = 0, max = 40)?.trim()?.ifBlank { null }
+        val limit = a.int("limit", 1, 500) ?: 100
+        val metrics = ctx.easelContent!!.metrics(limit = 500)
+            .filter { publishId == null || it.publishId == publishId }
+            .filter { platform == null || it.platform.equals(platform, ignoreCase = true) }
+            .take(limit)
+        return ok { put("count", metrics.size); put("metrics", JsonArray(metrics.map { it.json() })) }
+    }
+}
+
+internal object ContentMetricsDelete : EaselTool {
+    override val verb = Verb.ContentMetricsDelete
+    override val risk = Risk.Write
+    override val offScreen = true
+    override val def = ToolDef(
+        "content_metrics_delete",
+        Prompts.tool("content_metrics_delete"),
+        mapOf("id" to str("Snapshot id from content_metrics_add or content_metrics_list.")),
+        listOf("id"),
+    )
+
+    override suspend fun execute(a: Args, ctx: ToolContext): ToolExecution {
+        val id = a.str("id", max = 80)!!.trim()
+        if (!ctx.easelContent!!.deleteMetric(id))
+            return fail("metric_not_found", "No metric snapshot has id $id.", recoverable = false)
+        return ok { put("deleted", true); put("id", id) }
+    }
+}
+
+internal object ContentAttributionSummary : EaselTool {
+    override val verb = Verb.ContentAttributionSummary
+    override val risk = Risk.Read
+    override val concurrency = Concurrency.ParallelSafe
+    override val def = ToolDef(
+        "content_attribution_summary",
+        Prompts.tool("content_attribution_summary"),
+        mapOf(
+            "limit" to int("Maximum metric snapshots to aggregate, 1-500. Default 200.", 1, 500),
+            "top" to int("Number of top posts to include, 1-50. Default 5.", 1, 50),
+        ),
+    )
+
+    override suspend fun execute(a: Args, ctx: ToolContext): ToolExecution {
+        val limit = a.int("limit", 1, 500) ?: 200
+        val top = a.int("top", 1, 50) ?: 5
+        val summary = EaselAttribution.summarize(ctx.easelContent!!.metrics(limit), top)
+        return ok {
+            put("snapshotCount", summary.snapshotCount)
+            put("postCount", summary.postCount)
+            put("platforms", JsonArray(summary.platforms.map { platform ->
+                buildJsonObject {
+                    put("platform", platform.platform)
+                    put("posts", platform.posts)
+                    put("views", platform.views)
+                    put("engagement", platform.engagement)
+                    platform.engagementRate?.let { put("engagementRate", it) }
+                }
+            }))
+            put("topPosts", JsonArray(summary.topPosts.map { post ->
+                buildJsonObject {
+                    post.publishId?.let { put("publishId", it) }
+                    put("title", post.title)
+                    put("platform", post.platform)
+                    put("snapshotCount", post.snapshotCount)
+                    put("engagement", post.engagement)
+                    post.engagementRate?.let { put("engagementRate", it) }
+                    put("engagementChange", post.engagementChange)
+                    put("latest", post.latest.json())
+                }
+            }))
+        }
+    }
+}
+
+internal object ContentRiskScan : EaselTool {
+    override val verb = Verb.ContentRiskScan
+    override val risk = Risk.Read
+    override val concurrency = Concurrency.ParallelSafe
+    override val def = ToolDef(
+        "content_risk_scan",
+        Prompts.tool("content_risk_scan"),
+        mapOf(
+            "text" to str("Text to check before publishing: title, body, caption or script, up to 20000 characters."),
+            "platform" to str("Optional target platform, up to 40 characters. Used only as context in the report."),
+        ),
+        listOf("text"),
+    )
+
+    override suspend fun execute(a: Args, ctx: ToolContext): ToolExecution {
+        val report = EaselRiskScanner.scan(
+            a.str("text", max = 20_000)!!,
+            a.str("platform", min = 0, max = 40)?.trim().orEmpty(),
+        )
+        return ok {
+            put("level", report.level.name.lowercase())
+            put("platform", report.platform)
+            put("blockCount", report.blockCount)
+            put("warnCount", report.warnCount)
+            put("findings", JsonArray(report.findings.map { finding ->
+                buildJsonObject {
+                    put("level", finding.level.name.lowercase())
+                    put("code", finding.code)
+                    put("evidence", finding.evidence)
+                    put("suggestion", finding.suggestion)
+                }
+            }))
+        }
+    }
+}
+
 internal object EaselContentGroup {
-    val tools: List<AgentTool> = listOf(ContentPlanAdd, ContentPlanList, ContentPlanUpdate, ContentPublishLogAdd, ContentPublishLogList)
+    val tools: List<AgentTool> = listOf(
+        ContentPlanAdd, ContentPlanList, ContentPlanUpdate, ContentPublishLogAdd, ContentPublishLogList,
+        ContentMetricsAdd, ContentMetricsList, ContentMetricsDelete, ContentAttributionSummary, ContentRiskScan,
+    )
 }
 
 internal val ToolContext.easelContent: EaselContentPort?

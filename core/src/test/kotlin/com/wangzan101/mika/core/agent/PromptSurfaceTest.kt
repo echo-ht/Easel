@@ -19,9 +19,11 @@ import com.wangzan101.mika.core.vision.says
 import com.wangzan101.mika.core.cap.web.FakeWebPort
 import com.wangzan101.mika.core.easel.ContentPlan
 import com.wangzan101.mika.core.easel.ContentPlanPatch
+import com.wangzan101.mika.core.easel.ContentMetric
 import com.wangzan101.mika.core.easel.EaselContentPort
 import com.wangzan101.mika.core.easel.EaselCardRender
 import com.wangzan101.mika.core.easel.EaselCardRenderer
+import com.wangzan101.mika.core.easel.NewContentMetric
 import com.wangzan101.mika.core.easel.NewContentPlan
 import com.wangzan101.mika.core.easel.NewPublishRecord
 import com.wangzan101.mika.core.easel.PublishRecord
@@ -144,6 +146,9 @@ class PromptSurfaceTest {
         override suspend fun publishLog(limit: Int): List<PublishRecord> = emptyList()
         override suspend fun addPublish(input: NewPublishRecord): PublishRecord = error("not used")
         override suspend fun deletePublish(id: String): Boolean = error("not used")
+        override suspend fun metrics(limit: Int): List<ContentMetric> = emptyList()
+        override suspend fun addMetric(input: NewContentMetric): ContentMetric = error("not used")
+        override suspend fun deleteMetric(id: String): Boolean = error("not used")
     }
 
     /** 提示词表面测试只为卡片工具提供一个已连接的渲染器，不会真的渲染。 */

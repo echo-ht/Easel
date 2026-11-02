@@ -44,6 +44,13 @@ internal class Args(val tool: ToolDef, val o: JsonObject) {
         return p.content.trim().toDoubleOrNull()?.takeIf { it.isFinite() } ?: throw ArgError(k, "must be a number")
     }
 
+    fun long(k: String, min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE): Long? {
+        val d = number(k) ?: return null
+        if (d != Math.floor(d)) throw ArgError(k, "must be an integer")
+        if (d < min.toDouble() || d > max.toDouble()) throw ArgError(k, "must be between $min and $max")
+        return d.toLong()
+    }
+
     fun int(k: String, min: Int, max: Int): Int? {
         val d = number(k) ?: return null
         if (d != Math.floor(d)) throw ArgError(k, "must be an integer")

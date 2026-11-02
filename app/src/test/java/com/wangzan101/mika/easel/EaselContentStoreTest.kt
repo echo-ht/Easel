@@ -1,6 +1,7 @@
 package com.wangzan101.mika.easel
 
 import com.wangzan101.mika.core.easel.ContentPlanPatch
+import com.wangzan101.mika.core.easel.NewContentMetric
 import com.wangzan101.mika.core.easel.NewContentPlan
 import com.wangzan101.mika.core.easel.NewPublishRecord
 import com.wangzan101.mika.core.easel.PlanStatus
@@ -65,6 +66,29 @@ class EaselContentStoreTest {
         assertTrue(store.plans().isEmpty())
         assertTrue(dir.listFiles().orEmpty().any { it.name.startsWith("calendar.json.corrupt-") })
         assertNull(store.updatePlan("missing", ContentPlanPatch(status = PlanStatus.READY)))
+    }
+
+    @Test fun metricSnapshotsSurviveReopenAreNewestFirstAndDeleteWorks() = runTest {
+        val dir = tempDir()
+        val store = EaselContentStore(dir, now = { 1_000L }, newId = sequenceOf("m1", "m2").iterator().let { seq -> { seq.next() } })
+        store.addMetric(NewContentMetric(title = "旧", platform = "xhs", capturedAt = "2026-11-01T10:00", views = 10))
+        store.addMetric(NewContentMetric(title = "新", platform = "xhs", capturedAt = "2026-11-03T10:00", views = 20, likes = 2))
+        val metrics = EaselContentStore(dir).metrics(10)
+        assertEquals(listOf("新", "旧"), metrics.map { it.title })
+        assertEquals(2L, metrics.first().likes)
+        assertEquals("2026-11-03T10:00", metrics.first().capturedAt)
+        assertTrue(store.deleteMetric(metrics.first().id))
+        assertFalse(store.deleteMetric("missing"))
+        assertEquals(listOf("旧"), EaselContentStore(dir).metrics(10).map { it.title })
+    }
+
+    @Test fun metricWithoutCaptureTimeUsesLocalNow() = runTest {
+        val dir = tempDir()
+        val metric = EaselContentStore(dir, now = { 1_760_000_000_000L }).addMetric(
+            NewContentMetric(title = "x", platform = "xhs", likes = 1),
+        )
+        assertTrue(metric.capturedAt.isNotBlank())
+        assertTrue(Regex("""\d{4}-\d{2}-\d{2}T\d{2}:\d{2}""").containsMatchIn(metric.capturedAt))
     }
 
     /** UI、主任务、子任务会各建一个 Store；两个实例同时读改写时不能互相覆盖。 */

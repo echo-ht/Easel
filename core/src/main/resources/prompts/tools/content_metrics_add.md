@@ -1,0 +1,3 @@
+Record one observed performance snapshot for a published piece in the phone's local metrics log.
+
+Call this only after reading real numbers from the platform or creator dashboard. One post can have several snapshots over time; record each at the time it was captured. Pass publishId when the post exists in content_publish_log_list so the title and platform are filled from that record. Give at least one of views, likes, collects, comments, shares or followers. Keep range values and platform wording in note instead of inventing exact numbers. This writes a local snapshot; it does not fetch data or publish anything.

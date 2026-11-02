@@ -1,4 +1,4 @@
-# Easel Mobile (P1)
+# Easel Mobile (P2.1 in progress)
 
 This repository is a fork of [Mika](https://github.com/wangzan101/Mika) used as the
 Android host for Easel. The goal is a phone-only social-content workspace: the
@@ -27,6 +27,15 @@ publishes without a desktop browser.
 - **Publish center**: ready and scheduled plans form a local publishing queue.
   Copy the publish prompt, run it with the phone Agent, verify in the app, then
   record the real result. Published and failed records can be filtered.
+- **Metrics and attribution**: `content_metrics_add` records real performance
+  snapshots in `files/easel/metrics.json`; the Agent can list, delete and
+  summarize them with `content_attribution_summary`. The attribution screen
+  shows platform totals, top posts and recent snapshots, using a deterministic
+  engagement score rather than inventing causality.
+- **Pre-publish risk scan**: `content_risk_scan` checks text locally for likely
+  secrets, private network addresses, private paths, identity/phone numbers,
+  absolute advertising claims and common medical/financial promises. Evidence
+  is masked. This is a checklist, not a platform review or plagiarism check.
 - **Material library**: `内容工作台 → 素材库` imports files from the system picker
   into `Download/Easel`, then previews, shares or deletes them. It only reads
   files this app created; it does not scan the rest of the phone.
@@ -34,9 +43,10 @@ publishes without a desktop browser.
   into a PNG on the phone. The Android renderer uses a private VirtualDisplay
   with Presentation, WindowManager and software-Canvas fallbacks, disables
   JavaScript/network/local-file access, and returns a deterministic layout audit.
-- **Skills**: 39 bundled skills cover writing, planning, Xiaohongshu, Douyin,
+- **Skills**: 60 bundled skills cover writing, planning, Xiaohongshu, Douyin,
   Kuaishou, Bilibili, Zhihu, WeChat, cross-platform publishing, scheduling,
-  analytics, postmortems, video/audio/image processing and asset management.
+  analytics, postmortems, account diagnosis, topic evaluation, quality gates,
+  video/audio/image processing and asset management.
   They are indexed at build time from `core/src/main/resources/skills/`.
 - **Sandbox media**: the bundled Alpine runtime now includes `ffmpeg`, so the
   phone can transcode, crop, reframe, extract audio and burn subtitles offline.
@@ -83,6 +93,8 @@ back to the user.
   material library, publish center, 30-40 high-frequency skills, WebView card
   rendering, and bundled ffmpeg. Real-device publishing still needs a final
   acceptance pass on the user's phone.
+- P2.1 in progress: local metrics snapshots and attribution summary, deterministic
+  pre-publish risk scan, and the first 21 additional skills (60 total).
 
 ## Next milestones
 
@@ -90,8 +102,10 @@ back to the user.
   it into sections in a later schema migration.
 - Verify card rendering on real Android 12/14/15 devices, including system font
   fallback and VirtualDisplay behavior under battery saver.
-- P2: grow from 39 skills to the full 115-skill catalog, add data attribution,
-  audio/video pipelines, platform-specific adaptation and risk controls.
+- P2 remaining: grow from 60 skills to the full 115-skill catalog, finish
+  platform-specific adaptation and risk controls, and complete the audio/video
+  pipelines (chapters, highlights, video-to-article, subtitle translation,
+  audio mixing and slideshow video).
 
 ## Licensing
 

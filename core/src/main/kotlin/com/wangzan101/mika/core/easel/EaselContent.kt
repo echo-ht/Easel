@@ -84,6 +84,41 @@ data class NewPublishRecord(
 )
 
 /**
+ * 一条发布内容的指标快照。同一条内容可以在 Day 0 / 1 / 3 / 7 / 30 各记一次；
+ * [publishId] 指向发布日志，方便把数据归因回真实发布事件。
+ */
+@Serializable
+data class ContentMetric(
+    val id: String,
+    val publishId: String? = null,
+    val title: String,
+    val platform: String,
+    val capturedAt: String,
+    val views: Long? = null,
+    val likes: Long? = null,
+    val collects: Long? = null,
+    val comments: Long? = null,
+    val shares: Long? = null,
+    val followers: Long? = null,
+    val note: String = "",
+    val createdAt: Long,
+)
+
+data class NewContentMetric(
+    val publishId: String? = null,
+    val title: String,
+    val platform: String,
+    val capturedAt: String? = null,
+    val views: Long? = null,
+    val likes: Long? = null,
+    val collects: Long? = null,
+    val comments: Long? = null,
+    val shares: Long? = null,
+    val followers: Long? = null,
+    val note: String = "",
+)
+
+/**
  * 内容日历与发布日志的本机存储。核心只依赖这个端口，Android 侧用 App 私有目录实现；
  * 数据不经过服务器，也不依赖沙箱是否安装。
  */
@@ -96,4 +131,8 @@ interface EaselContentPort {
     suspend fun publishLog(limit: Int = 50): List<PublishRecord>
     suspend fun addPublish(input: NewPublishRecord): PublishRecord
     suspend fun deletePublish(id: String): Boolean
+
+    suspend fun metrics(limit: Int = 200): List<ContentMetric>
+    suspend fun addMetric(input: NewContentMetric): ContentMetric
+    suspend fun deleteMetric(id: String): Boolean
 }

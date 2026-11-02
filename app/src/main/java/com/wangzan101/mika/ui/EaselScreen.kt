@@ -50,6 +50,8 @@ fun EaselScreen(
     onOpenCalendar: () -> Unit = {},
     onOpenPublishLog: () -> Unit = {},
     onOpenMaterials: () -> Unit = {},
+    onOpenAttribution: () -> Unit = {},
+    onOpenRisk: () -> Unit = {},
 ) {
     BackHandler(onBack = onBack)
     val context = LocalContext.current
@@ -126,6 +128,25 @@ fun EaselScreen(
                 title = "发布记录",
                 subtitle = "待发布队列、已发布与失败的真实结果",
                 onClick = onOpenPublishLog,
+                trailing = { RowChevron() },
+            )
+        }
+
+        GroupLabel("数据与风控")
+        GroupCard {
+            ListRow(
+                icon = MikaIcons.Chart,
+                title = "数据归因",
+                subtitle = "看平台表现、Top 内容和每次指标快照",
+                first = true,
+                onClick = onOpenAttribution,
+                trailing = { RowChevron() },
+            )
+            ListRow(
+                icon = MikaIcons.Shield,
+                title = "发布前风控",
+                subtitle = "检查凭据、隐私、内网地址和夸大宣传",
+                onClick = onOpenRisk,
                 trailing = { RowChevron() },
             )
         }
