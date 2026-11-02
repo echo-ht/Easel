@@ -121,9 +121,21 @@ class EaselContentToolsTest {
     @Test fun rejectsBadDatesAndMissingPlanIds() = runTest {
         val (_, badDate) = call("content_plan_add", """{"title":"x","scheduledAt":"tomorrow"}""")
         assertEquals("invalid_arguments", badDate.content["error"]?.jsonPrimitive?.content)
+        val (_, impossibleDate) = call("content_plan_add", """{"title":"x","scheduledAt":"2026-02-31"}""")
+        assertEquals("invalid_arguments", impossibleDate.content["error"]?.jsonPrimitive?.content)
         val (_, missing) = call("content_plan_update", """{"id":"nope","status":"ready"}""")
         assertEquals("plan_not_found", missing.content["error"]?.jsonPrimitive?.content)
         assertNotNull(missing.content["message"])
+    }
+
+    @Test fun dateNormalizationAcceptsOnlyRealLocalDates() {
+        assertNull(EaselContentDate.normalize("  "))
+        assertEquals("2026-11-05", EaselContentDate.normalize("2026-11-05"))
+        assertEquals("2026-11-05T20:00", EaselContentDate.normalize("2026-11-05 20:00"))
+        assertEquals("2026-11-05T20:00:30", EaselContentDate.normalize("2026-11-05T20:00:30"))
+        for (bad in listOf("tomorrow", "2026-02-31", "2026-13-01", "2026-11-05T25:00")) {
+            assertTrue(bad, runCatching { EaselContentDate.normalize(bad) }.isFailure)
+        }
     }
 
     private companion object {

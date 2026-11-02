@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.wangzan101.mika.core.easel.ContentPlan
+import com.wangzan101.mika.core.easel.EaselContentDate
 import com.wangzan101.mika.core.easel.NewContentPlan
 import com.wangzan101.mika.core.easel.NewPublishRecord
 import com.wangzan101.mika.core.easel.PlanStatus
@@ -60,14 +61,15 @@ fun EaselCalendarScreen(onBack: () -> Unit) {
     fun add() {
         val cleanTitle = title.trim()
         if (cleanTitle.isEmpty()) return
-        val slot = scheduledAt.trim().ifEmpty { null }
-        if (slot != null && !slot.matches(Regex("""\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2})?)?"""))) {
-            error = "日期写成 2026-11-05 或 2026-11-05T20:00"
+        val slot = try {
+            EaselContentDate.normalize(scheduledAt)
+        } catch (e: IllegalArgumentException) {
+            error = e.message ?: EaselContentDate.FORMAT_HINT
             return
         }
         scope.launch {
             runCatching {
-                store.addPlan(NewContentPlan(cleanTitle, platform.trim(), slot?.replace(' ', 'T'), PlanStatus.IDEA, notes.trim()))
+                store.addPlan(NewContentPlan(cleanTitle, platform.trim(), slot, PlanStatus.IDEA, notes.trim()))
             }.onSuccess {
                 title = ""; platform = ""; scheduledAt = ""; notes = ""; error = null; refresh++
             }.onFailure { error = it.message ?: "没有保存成功" }

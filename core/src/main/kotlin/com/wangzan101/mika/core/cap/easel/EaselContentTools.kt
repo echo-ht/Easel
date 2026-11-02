@@ -2,6 +2,7 @@ package com.wangzan101.mika.core.cap.easel
 
 import com.wangzan101.mika.core.easel.ContentPlan
 import com.wangzan101.mika.core.easel.ContentPlanPatch
+import com.wangzan101.mika.core.easel.EaselContentDate
 import com.wangzan101.mika.core.easel.EaselContentPort
 import com.wangzan101.mika.core.easel.NewContentPlan
 import com.wangzan101.mika.core.easel.NewPublishRecord
@@ -26,20 +27,13 @@ import com.wangzan101.mika.core.tool.str
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import java.time.LocalDate
-import java.time.LocalDateTime
-
-private val DATE_OR_TIME = Regex("""\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2})?)?""")
-
 private fun dateArg(a: Args, name: String): String? {
     val raw = a.str(name, min = 0, max = 32)?.trim().orEmpty()
-    if (raw.isEmpty()) return null
-    if (!DATE_OR_TIME.matches(raw)) throw ArgError(name, "must be YYYY-MM-DD or YYYY-MM-DDTHH:mm")
-    val normalized = raw.replace(' ', 'T')
-    runCatching {
-        if (normalized.length == 10) LocalDate.parse(normalized) else LocalDateTime.parse(normalized)
-    }.getOrElse { throw ArgError(name, "must be a real date or date-time") }
-    return normalized
+    return try {
+        EaselContentDate.normalize(raw)
+    } catch (e: IllegalArgumentException) {
+        throw ArgError(name, e.message ?: EaselContentDate.FORMAT_HINT)
+    }
 }
 
 private fun planStatus(a: Args, name: String = "status"): PlanStatus? {
