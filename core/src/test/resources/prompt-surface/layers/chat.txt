@@ -281,7 +281,16 @@ The phone keeps a local content calendar and a publishing log. They survive app 
 - The publishing log is evidence of what happened, not a queue. Do not write a planned post into the log before it is actually published.
 - The user sees both lists in 内容工作台 on the phone. Keep entries short enough to scan on a small screen.
 
-==== tools (25) ====
+## Local card rendering
+
+The phone can turn a self-contained HTML card into a PNG without a desktop browser or Playwright.
+
+- Workflow: write the HTML into `/workspace`, call `render_card`, read the returned layout audit, fix the HTML if it fails, render again, then use `share_file` when the user wants the image exported.
+- The renderer runs on the phone with JavaScript, network access, local-file access and content-provider access disabled. Use inline CSS, Android system fonts, inline SVG and `data:` images only. Do not use Tailwind/Google Fonts CDNs, remote images, scripts or iframes.
+- Render at the card's CSS size and use `scale` for a sharper image. A 1600x900 horizontal quote card is `width=1600`, `height=900`, `scale=2`; a 1080x1440 vertical card is `width=1080`, `height=1440`, `scale=2`.
+- The audit checks vertical span, bottom dead space, the largest inner gap and four horizontal density bands. If `audit.pass` is false, do not present the PNG as finished; adjust the layout and render again.
+
+==== tools (26) ====
 ## wait
 Wait briefly for an app to load or an animation to finish.
 {"type":"object","properties":{"seconds":{"type":"number","description":"0.2-10 seconds.","minimum":0.2,"maximum":10},"reason":{"type":"string","description":"Optional short note on why you are calling this, in the user's language; shown to the user as the step label."}},"required":["seconds"],"additionalProperties":false}
@@ -364,6 +373,12 @@ Read recent entries from the phone's local publishing log, newest first.
 
 Use it to review what was actually published, when, where and with what result. The log is not a prediction or a to-do list. Do not report a record as a successful publish if its status is failed.
 {"type":"object","properties":{"limit":{"type":"integer","description":"Maximum records to return, 1-200. Default 50.","minimum":1,"maximum":200},"reason":{"type":"string","description":"Optional short note on why you are calling this, in the user's language; shown to the user as the step label."}},"required":[],"additionalProperties":false}
+
+## render_card
+Render one self-contained HTML card to a PNG on this phone.
+
+Put the HTML under /workspace first, then pass its path and a new .png path under /workspace. The renderer disables JavaScript, network access and local-file access, so external scripts, stylesheets, fonts and images will not load; use inline CSS, system fonts, inline SVG and data: images. The result includes a deterministic layout audit. If audit.pass is false, read the problems, change the HTML and render again instead of delivering the image silently. Use share_file after the card passes when the user wants it in Downloads/Easel.
+{"type":"object","properties":{"htmlPath":{"type":"string","description":"HTML file inside /workspace, e.g. /workspace/cards/quote.html. It must be self-contained: inline CSS, system fonts, inline SVG and data: images only."},"outPath":{"type":"string","description":"PNG file to write inside /workspace, e.g. /workspace/cards/quote.png. The extension must be .png."},"width":{"type":"integer","description":"CSS viewport width in pixels, 200-4096. Default 1080.","minimum":200,"maximum":4096},"height":{"type":"integer","description":"CSS viewport height in pixels, 200-4096. Default 1440.","minimum":200,"maximum":4096},"scale":{"type":"integer","description":"Device pixel ratio, 1-3. Output is width*scale by height*scale. Default 2.","minimum":1,"maximum":3},"waitMs":{"type":"integer","description":"Extra wait after the page reports loaded, 0-5000 ms. Default 250.","minimum":0,"maximum":5000},"overwrite":{"type":"boolean","description":"Set true to replace an existing PNG. Default false."},"reason":{"type":"string","description":"Optional short note on why you are calling this, in the user's language; shown to the user as the step label."}},"required":["htmlPath","outPath"],"additionalProperties":false}
 
 ## phone_list_apps
 List the apps installed on the phone, as package + label. Use an exact returned package with phone_launch_app.

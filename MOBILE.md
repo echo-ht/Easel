@@ -1,4 +1,4 @@
-# Easel Mobile (P0)
+# Easel Mobile (P2)
 
 This repository is a fork of [Mika](https://github.com/wangzan101/Mika) used as the
 Android host for Easel. The goal is a phone-only social-content workspace: the
@@ -17,8 +17,16 @@ publishes without a desktop browser.
   `files/easel/profile.md`; the profile is injected into every task's context.
 - **Content library**: `内容工作台 → 内容库` lists files exported by
   `share_file` under `Download/Easel` and opens/shares them with the system.
-- **Skills**: `content-workflow`, `content-profile`, and `xhs-publish` are bundled
-  into `core/src/main/resources/skills/` and indexed at build time.
+- **Content calendar**: the phone keeps plans and a publishing log in app-private
+  storage. The Agent uses `content_plan_*` and `content_publish_log_*`; dates are
+  validated as real local dates and published records update their plan.
+- **Card rendering**: `render_card` turns self-contained HTML in `/workspace`
+  into a PNG on the phone. The Android renderer uses a private VirtualDisplay
+  with Presentation, WindowManager and software-Canvas fallbacks, disables
+  JavaScript/network/local-file access, and returns a deterministic layout audit.
+- **Skills**: `content-workflow`, `content-profile`, `xhs-publish`,
+  `card-design`, and `card-quote` are bundled into
+  `core/src/main/resources/skills/` and indexed at build time.
 - **App identity**: label `Easel`, application id `com.easel.mobile`.
 
 ## Build on GitHub
@@ -49,18 +57,25 @@ for confirmation when needed, publishes, and verifies the new note. If the app
 shows a login, captcha, risk prompt, or payment step, the agent hands the phone
 back to the user.
 
+## Milestones
+
+- P0 complete: phone-only Android host with Mika's accessibility, browser and
+  sandbox capabilities, plus the Easel identity and content profile.
+- P1 complete: native content calendar and publishing log in app-private files,
+  exposed as `content_plan_*` and `content_publish_log_*`.
+- P2 complete: native WebView card renderer, `render_card`, and the
+  `card-design` / `card-quote` skills. No Playwright, Chromium download or CDN
+  fonts are needed.
+
 ## Next milestones
 
-- P1 in progress: native content calendar and publishing log are stored in the
-  app's private files and exposed to the Agent as `content_plan_*` and
-  `content_publish_log_*` tools.
-- Port the remaining Easel skills (cards, video, analytics) to Mika's
-  phone/web/sandbox tool semantics.
-- Add an HTML-to-image renderer based on the Android WebView to replace
-  Playwright.
+- Port the remaining Easel skills (video, analytics) to Mika's phone/web/sandbox
+  tool semantics.
 - Add ffmpeg and media scripts to the bundled sandbox rootfs.
 - Map Easel's 6-file profile format to the single mobile profile file, or split
   it into sections in a later schema migration.
+- Verify card rendering on real Android 12/14/15 devices, including system font
+  fallback and VirtualDisplay behavior under battery saver.
 
 ## Licensing
 

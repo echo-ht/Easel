@@ -32,7 +32,7 @@ enum class Verb {
     RunCommand, RunBundledScript, ReadFile, WriteFile, SearchFiles, ShareFile,
     Wait, AskUser, RequestConfirmation, HandToUser, HandleObstacle, EndNotDone,
     KnowledgeSearch, KnowledgeRead, SkillSearch, SkillRead, SkillSave, MemorySearch, MemorySave, ProfileEdit, HistoryRead,
-    ContentPlanAdd, ContentPlanList, ContentPlanUpdate, ContentPublishLogAdd, ContentPublishLogList,
+    ContentPlanAdd, ContentPlanList, ContentPlanUpdate, ContentPublishLogAdd, ContentPublishLogList, RenderCard,
     ScheduleTask,
     SpawnAgent, SettingsList, SettingsSet,
 }

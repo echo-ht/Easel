@@ -44,7 +44,7 @@ class ToolRiskTest {
 
     @Test fun readCallsRefuseWhatTheOldListsRefused() = runTest {
         val refused = oldWriting + oldSandbox + WEB_SCRIPT_TOOL + setOf("phone_find", "phone_collect", "phone_dialog", "phone_run", "phone_system_command", "schedule_task", "spawn_agent", "settings_set")
-        val refusedWithLocalContent = refused + setOf("content_plan_add", "content_plan_update", "content_publish_log_add")
+        val refusedWithLocalContent = refused + setOf("content_plan_add", "content_plan_update", "content_publish_log_add", "render_card")
         assertEquals(refusedWithLocalContent, allTools().filter { !it.readOnly }.map { it.name }.toSet())
         val d = toolDispatcher(FakeScreen())
         for (name in names) {

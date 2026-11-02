@@ -52,6 +52,7 @@ import com.wangzan101.mika.chat.ConversationStore
 import com.wangzan101.mika.memory.MemoryRuntime
 import com.wangzan101.mika.settings.MemorySwitches
 import com.wangzan101.mika.settings.ProviderStore
+import com.wangzan101.mika.easel.AndroidEaselCardRenderer
 import com.wangzan101.mika.core.record.RunEvent
 import com.wangzan101.mika.core.replay.RouteMatcher
 import com.wangzan101.mika.core.replay.RouteRecorder
@@ -421,6 +422,7 @@ class TaskRun(
 
     /** 本任务的沙箱:一个任务一份(导出额度按任务算),工作区是本对话的。 */
     private val sandbox by lazy { AndroidSandbox(service, SandboxState.get(service), onShared = ::addShared) }
+    private val easelCards by lazy { AndroidEaselCardRenderer(service) }
 
     /** 沙箱导出了一个文件(share_file 或 `mika share`)。 */
     fun addShared(f: SharedFile) = synchronized(service.taskState.shownLock) { _sharedFiles.value = _sharedFiles.value + f }
@@ -704,7 +706,7 @@ class TaskRun(
                         sandbox = sandbox, workspace = { conversationId }, runSpec = childSpec,
                         conversationId = conversationId, inlineScreen = speed.inlineScreen,
                         adaptiveVision = speed.adaptiveVision,
-                        easelContent = EaselContentStore(service))
+                        easelContent = EaselContentStore(service), easelCards = easelCards)
                     AgentLoop(model, childTools, SystemPrompt.identity(), maxSteps = childSpec.stepBudget ?: AgentLoop.UNLIMITED_STEPS,
                         // 子任务跟着询问 / 自主;询问时它也过关卡,子任务里花钱的一步一律不做
                         confirmations = runApproval.gate(), approvals = runApproval, autonomous = runApproval.startedAutonomous,
@@ -748,7 +750,9 @@ class TaskRun(
                 // 这个对话之前几轮的运行记录(只读;history_read 只认 runSpec 里这个对话的轮次)
                 runRecords = RunStore(service).reader(),
                 // 内容日历与发布日志:App 私有目录里的本机数据,内容任务可直接读写
-                easelContent = EaselContentStore(service))
+                easelContent = EaselContentStore(service),
+                // 手机原生 HTML -> PNG:卡片在工作区里渲染,不联网、不跑脚本
+                easelCards = easelCards)
             dispatcher = tools
             val agent = AgentLoop(
                 model, tools,

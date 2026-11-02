@@ -18,8 +18,13 @@ import com.wangzan101.mika.core.cap.web.PagePacing
 import com.wangzan101.mika.core.uistate.PlacePace
 import com.wangzan101.mika.core.cap.mcp.McpConnection
 import com.wangzan101.mika.core.cap.easel.EASEL
+import com.wangzan101.mika.core.cap.easel.EASEL_CARDS
+import com.wangzan101.mika.core.cap.easel.EaselCardCapability
+import com.wangzan101.mika.core.cap.easel.EaselCardGroup
 import com.wangzan101.mika.core.cap.easel.EaselCapability
 import com.wangzan101.mika.core.cap.easel.EaselContentGroup
+import com.wangzan101.mika.core.easel.EaselCardRenderer
+import com.wangzan101.mika.core.easel.EaselCardRuntime
 import com.wangzan101.mika.core.easel.EaselContentPort
 import com.wangzan101.mika.core.general.GeneralGroup
 import com.wangzan101.mika.core.knowledge.GuideCatalog
@@ -37,6 +42,8 @@ import com.wangzan101.mika.core.tool.ToolIndex
 import com.wangzan101.mika.core.vision.ImageOps
 import com.wangzan101.mika.core.vision.VisionService
 import com.wangzan101.mika.core.workspace.WorkspacePathCheck
+import com.wangzan101.mika.core.workspace.SandboxError
+import com.wangzan101.mika.core.workspace.WorkspaceFileGate
 import com.wangzan101.mika.core.run.RunId
 import com.wangzan101.mika.core.run.RunSpec
 import com.wangzan101.mika.core.trigger.Scheduled
@@ -120,6 +127,8 @@ fun toolDispatcher(
     runRecords: RunRecords? = null,
     /** 本机内容日历与发布日志;给了才提供 Easel 的内容规划工具。 */
     easelContent: EaselContentPort? = null,
+    /** 手机原生 HTML -> PNG 渲染器;给了且有沙箱文件关口时才提供 render_card。 */
+    easelCards: EaselCardRenderer? = null,
 ): ToolDispatcher {
     val config = ToolConfig(visionEnabled, skills, recordFrames, vision, inlineScreen, adaptiveVision, memory, profile, utterances, conversationId,
         imageOps, scheduleTrigger, scheduleAdmin, runSpec, childHost, userScreens, personalSkills, selfConfig, runRecords)
@@ -140,6 +149,14 @@ fun toolDispatcher(
         object : CapabilityProvider {
             override val id = EASEL
             override fun open(spec: RunSpec) = EaselCapability(easelContent)
+        },
+        object : CapabilityProvider {
+            override val id = EASEL_CARDS
+            override fun open(spec: RunSpec) = run {
+                val box = sandbox
+                val cards = easelCards
+                EaselCardCapability(if (box != null && cards != null) easelCardRuntime(box, workspace, cards) else null)
+            }
         },
     ) + mcpServers.map(::McpClientProvider)
     return RunAssembler(providers).assemble(runSpec, config, stableRefs, FORMER_PREFIX, RENAMED, RETIRED, MOVED)
@@ -187,10 +204,36 @@ fun recordedTools(): ToolIndex = legacyNames().let { legacy -> ToolIndex(allTool
 
 /** Mika 所有可能提供的工具,按发给模型的顺序。 */
 internal fun allTools(): List<AgentTool> =
-    GeneralGroup.tools + EaselContentGroup.tools + PhoneCapability.tools() + WebGroup.tools + SandboxGroup.tools
+    GeneralGroup.tools + EaselContentGroup.tools + EaselCardGroup.tools + PhoneCapability.tools() + WebGroup.tools + SandboxGroup.tools
 
 /** Mika 所有可能提供的工具的声明。 */
 fun knownTools(): ToolIndex = ToolIndex(allTools())
+
+/** 把沙箱文件关口接成卡片运行环境；错码沿用 workspace 包，工具层按码回给模型。 */
+private fun easelCardRuntime(sandbox: SandboxPort, workspace: () -> String, renderer: EaselCardRenderer): EaselCardRuntime =
+    EaselCardRuntime(
+        workspace = workspace,
+        read = { ws, path, maxBytes ->
+            val (root, rel) = sandbox.hostRoot(ws, path, forWrite = false)
+                ?: throw SandboxError(WorkspaceFileGate.OUTSIDE, "htmlPath must be inside /workspace.", recoverable = false)
+            sandbox.files.openRead(root, rel).use { file ->
+                if (file.size > maxBytes) {
+                    throw SandboxError("file_too_large", "$path is larger than ${maxBytes / (1024 * 1024)} MB.", recoverable = true)
+                }
+                file.read(0, file.size.toInt())
+            }
+        },
+        write = { ws, path, bytes, overwrite ->
+            val (root, rel) = sandbox.hostRoot(ws, path, forWrite = true)
+                ?: throw SandboxError(WorkspaceFileGate.OUTSIDE, "outPath must be inside /workspace.", recoverable = false)
+            if (overwrite) {
+                sandbox.files.replace(root, rel, bytes)
+            } else {
+                sandbox.files.createNew(root, rel).use { it.write(bytes) }
+            }
+        },
+        renderer = renderer,
+    )
 
 /** Mika 所有可能提供的工具名(技能文档里提到的工具名据此校验)。 */
 fun knownToolNames(): Set<String> = knownTools().names + DO_STEPS_TOOL
