@@ -17,6 +17,12 @@ import com.wangzan101.mika.core.vision.JvmTestImageOps
 import com.wangzan101.mika.core.vision.VisionService
 import com.wangzan101.mika.core.vision.says
 import com.wangzan101.mika.core.cap.web.FakeWebPort
+import com.wangzan101.mika.core.easel.ContentPlan
+import com.wangzan101.mika.core.easel.ContentPlanPatch
+import com.wangzan101.mika.core.easel.EaselContentPort
+import com.wangzan101.mika.core.easel.NewContentPlan
+import com.wangzan101.mika.core.easel.NewPublishRecord
+import com.wangzan101.mika.core.easel.PublishRecord
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import com.wangzan101.mika.core.assembly.toolDispatcher
@@ -58,7 +64,7 @@ class PromptSurfaceTest {
                         priorTurns = listOf(Turn("之前", "好", "succeeded", runId = "r1"))),
                     childHost = com.wangzan101.mika.core.child.ChildRunHost { spec, _ ->
                         com.wangzan101.mika.core.child.ChildResult(spec.id, com.wangzan101.mika.core.child.ChildPhase.Completed, "") },
-                    runRecords = NoRecords,
+                    runRecords = NoRecords, easelContent = EmptyEaselContent,
                 )
             }, SpeedFlags(inlineScreen = true, batchSteps = true, deepLinks = true), mem)
         },
@@ -124,6 +130,17 @@ class PromptSurfaceTest {
     private object NoRecords : com.wangzan101.mika.core.record.RunRecords {
         override suspend fun summary(runId: String): com.wangzan101.mika.core.record.RunSummary? = null
         override suspend fun events(runId: String) = emptyList<com.wangzan101.mika.core.record.RunEvent>()
+    }
+
+    /** 提示词表面测试只为工具定义提供一个已连接的本机内容端口，不会真的读写。 */
+    private object EmptyEaselContent : EaselContentPort {
+        override suspend fun plans(): List<ContentPlan> = emptyList()
+        override suspend fun addPlan(input: NewContentPlan): ContentPlan = error("not used")
+        override suspend fun updatePlan(id: String, patch: ContentPlanPatch): ContentPlan? = error("not used")
+        override suspend fun deletePlan(id: String): Boolean = error("not used")
+        override suspend fun publishLog(limit: Int): List<PublishRecord> = emptyList()
+        override suspend fun addPublish(input: NewPublishRecord): PublishRecord = error("not used")
+        override suspend fun deletePublish(id: String): Boolean = error("not used")
     }
 
     /** 只回一个 finish:记下开工那次请求的系统提示词和工具。 */

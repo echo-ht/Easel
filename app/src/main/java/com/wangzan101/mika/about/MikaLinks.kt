@@ -17,8 +17,8 @@ object MikaLinks {
     /** 旧版 Mika 交流群地址;Easel 暂不启用。 */
     const val X_GROUP = REPO
 
-    /** 检查更新只问 GitHub 发布页(不登录,每小时有次数限制)。 */
-    const val LATEST_RELEASE_API = "$REPO/releases/latest"
+    /** 检查更新只问 GitHub Releases JSON API(不登录,每小时有次数限制)。 */
+    const val LATEST_RELEASE_API = "https://api.github.com/repos/echo-ht/Easel/releases/latest"
 
     /** 反馈时预先填进问题模板的设备与版本信息。 */
     data class Device(

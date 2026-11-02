@@ -3,6 +3,7 @@ package com.wangzan101.mika.core.easel
 import com.wangzan101.mika.core.assembly.toolDispatcher
 import com.wangzan101.mika.core.model.Part
 import com.wangzan101.mika.core.tool.FakeScreen
+import com.wangzan101.mika.core.tool.execute
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
@@ -51,7 +52,8 @@ class EaselContentToolsTest {
 
     private suspend fun call(name: String, body: String, port: EaselContentPort? = MemoryPort()) =
         toolDispatcher(FakeScreen(), easelContent = port).let { d ->
-            d to d.executeRead(Part.ToolCall("c", name, body))
+            val call = Part.ToolCall("c", name, body)
+            d to if (name in WRITE_TOOLS) d.execute(call) else d.executeRead(call)
         }
 
     @Test fun toolsOnlyExistWhenTheLocalStoreIsConnected() {
@@ -60,6 +62,14 @@ class EaselContentToolsTest {
         val withStore = toolDispatcher(FakeScreen(), easelContent = MemoryPort()).definitions().map { it.name }
         assertEquals(setOf("content_plan_add", "content_plan_list", "content_plan_update", "content_publish_log_add", "content_publish_log_list"),
             withStore.filter { it.startsWith("content_") }.toSet())
+    }
+
+    @Test fun localWritesAreNotAdvertisedAsReads() = runTest {
+        val d = toolDispatcher(FakeScreen(), easelContent = MemoryPort())
+        for (name in WRITE_TOOLS) {
+            val result = d.executeRead(Part.ToolCall("c", name, "{}"))
+            assertEquals("not_a_read", result.content["error"]?.jsonPrimitive?.content)
+        }
     }
 
     @Test fun capabilityPromptAndDefinitionsFollowThePort() = runTest {
@@ -109,5 +119,9 @@ class EaselContentToolsTest {
         val (_, missing) = call("content_plan_update", """{"id":"nope","status":"ready"}""")
         assertEquals("plan_not_found", missing.content["error"]?.jsonPrimitive?.content)
         assertNotNull(missing.content["message"])
+    }
+
+    private companion object {
+        val WRITE_TOOLS = setOf("content_plan_add", "content_plan_update", "content_publish_log_add")
     }
 }

@@ -83,7 +83,8 @@ internal interface EaselTool : AgentTool {
 
 internal object ContentPlanAdd : EaselTool {
     override val verb = Verb.ContentPlanAdd
-    override val risk = Risk.Read
+    override val risk = Risk.Write
+    override val offScreen = true
     override val def = ToolDef(
         "content_plan_add",
         Prompts.tool("content_plan_add"),
@@ -152,7 +153,8 @@ internal object ContentPlanList : EaselTool {
 
 internal object ContentPlanUpdate : EaselTool {
     override val verb = Verb.ContentPlanUpdate
-    override val risk = Risk.Read
+    override val risk = Risk.Write
+    override val offScreen = true
     override val def = ToolDef(
         "content_plan_update",
         Prompts.tool("content_plan_update"),
@@ -186,7 +188,8 @@ internal object ContentPlanUpdate : EaselTool {
 
 internal object ContentPublishLogAdd : EaselTool {
     override val verb = Verb.ContentPublishLogAdd
-    override val risk = Risk.Read
+    override val risk = Risk.Write
+    override val offScreen = true
     override val def = ToolDef(
         "content_publish_log_add",
         Prompts.tool("content_publish_log_add"),

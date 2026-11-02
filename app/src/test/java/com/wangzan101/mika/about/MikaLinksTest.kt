@@ -47,4 +47,12 @@ class MikaLinksTest {
         val body = URLDecoder.decode(query.substringAfter("body="), "UTF-8")
         assertEquals(MikaLinks.issueBody(device), body)
     }
+
+    /** 检查更新要的是 GitHub JSON API,不能拿发布网页的地址去解析。 */
+    @Test
+    fun updateApiUsesGitHubRestEndpoint() {
+        assertEquals("https://api.github.com/repos/echo-ht/Easel/releases/latest", MikaLinks.LATEST_RELEASE_API)
+        assertTrue(MikaLinks.LATEST_RELEASE_API.startsWith("https://api.github.com/"))
+        assertFalse(MikaLinks.RELEASES.startsWith(MikaLinks.LATEST_RELEASE_API))
+    }
 }

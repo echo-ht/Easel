@@ -32,16 +32,15 @@ class EaselContentStore(
     constructor(context: Context) : this(File(context.filesDir, "easel"))
 
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; prettyPrint = true }
-    private val lock = Any()
     private val calendarFile = File(dir, "calendar.json")
     private val publishFile = File(dir, "publish-log.json")
 
     override suspend fun plans(): List<ContentPlan> = withContext(Dispatchers.IO) {
-        synchronized(lock) { readPlans() }
+        synchronized(LOCK) { readPlans() }
     }
 
     override suspend fun addPlan(input: NewContentPlan): ContentPlan = withContext(Dispatchers.IO) {
-        synchronized(lock) {
+        synchronized(LOCK) {
             val at = now()
             val plan = ContentPlan(
                 id = newId(), title = input.title.trim(), platform = input.platform.trim(),
@@ -54,7 +53,7 @@ class EaselContentStore(
     }
 
     override suspend fun updatePlan(id: String, patch: ContentPlanPatch): ContentPlan? = withContext(Dispatchers.IO) {
-        synchronized(lock) {
+        synchronized(LOCK) {
             val plans = readPlans().toMutableList()
             val index = plans.indexOfFirst { it.id == id }
             if (index < 0) return@synchronized null
@@ -74,7 +73,7 @@ class EaselContentStore(
     }
 
     override suspend fun deletePlan(id: String): Boolean = withContext(Dispatchers.IO) {
-        synchronized(lock) {
+        synchronized(LOCK) {
             val plans = readPlans()
             val kept = plans.filterNot { it.id == id }
             if (kept.size == plans.size) return@synchronized false
@@ -84,7 +83,7 @@ class EaselContentStore(
     }
 
     override suspend fun publishLog(limit: Int): List<PublishRecord> = withContext(Dispatchers.IO) {
-        synchronized(lock) {
+        synchronized(LOCK) {
             readPublishes()
                 .sortedWith(compareByDescending<PublishRecord> { it.publishedAt }.thenByDescending { it.createdAt })
                 .take(limit)
@@ -92,7 +91,7 @@ class EaselContentStore(
     }
 
     override suspend fun addPublish(input: NewPublishRecord): PublishRecord = withContext(Dispatchers.IO) {
-        synchronized(lock) {
+        synchronized(LOCK) {
             val at = now()
             val record = PublishRecord(
                 id = newId(), title = input.title.trim(), platform = input.platform.trim(), status = input.status,
@@ -105,7 +104,7 @@ class EaselContentStore(
     }
 
     override suspend fun deletePublish(id: String): Boolean = withContext(Dispatchers.IO) {
-        synchronized(lock) {
+        synchronized(LOCK) {
             val records = readPublishes()
             val kept = records.filterNot { it.id == id }
             if (kept.size == records.size) return@synchronized false
@@ -146,6 +145,9 @@ class EaselContentStore(
         LocalDateTime.ofInstant(Instant.ofEpochMilli(at), ZoneId.systemDefault()).withNano(0).toString()
 
     companion object {
+        /** UI、主任务和子任务各会 new 一个 Store；按进程串行化读改写，避免互相覆盖。 */
+        private val LOCK = Any()
+
         val STATUS_LABELS = mapOf(
             PlanStatus.IDEA to "想法",
             PlanStatus.DRAFTING to "制作中",
