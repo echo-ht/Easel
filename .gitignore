@@ -1,96 +1,23 @@
-# Dependencies
-node_modules/
-__pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-dist/
+.superpowers/
 build/
-.eggs/
-
-# Environment
-.env
-.env.local
-.env.xhs
-# Local trend collector configuration can contain private endpoints/credentials.
-config/trend-sources.json
-config/trend-scripts.json
-config/trend-collectors/
-config/*.json.lock
-collectors/
-# setup.sh 默认把 Python 依赖装进项目内的 .venv（见 setup.sh 的虚拟环境分支）
-.venv/
-
-# Docker
-docker/data/
-
-# IDE
+.gradle/
+local.properties
+*.apk
 .idea/
-*.swp
-*.swo
-*~
-
-# OS
+*.iml
 .DS_Store
-Thumbs.db
+*.local.txt
+.kotlin/
 
-# OpenClaw runtime
-.openclaw/
-
-# Outputs (keep directory structure via .gitkeep, ignore actual content)
-outputs/**/*
-!outputs/**/.gitkeep
-
-# Assets (user materials are not tracked; curated brand/README media is)
-assets/**/*
-!assets/**/.gitkeep
-!assets/icon.png
-!assets/icon-transparent.png
-!assets/icon-noword.png
-!assets/readme/
-!assets/readme/**
-
-# Session files
-*.jsonl
-
-# Logs
-*.log
-logs/
-
-# Build artifacts
-*.egg-info/
-.last-session
-.pytest_cache/
-
-# 登录态 / 凭证（绝不入库——含 SESSDATA 等 token）
-cookies.json
-
-# Local account profiles (publish only the reusable template)
-profiles/*/
-!profiles/_template/
-!profiles/_template/**
-
-# 临时 / scratch（ad-hoc 运行残留）
-.scratch/
-.drama_run/
-.drama_tmp/
+# 本地 Agent 工作树与历史安装包
 .claude/
+dist/
+.omc/
 
-# SKILL 自研原始版本（保留备查，含嵌套 git 仓库，不入库）
-skill-test/
-.playwright-cli/
+# 给 AI 编程助手的本地规则,只留在本机
+CLAUDE.md
 
-# 备份/临时文件
-*.bak
-*.orig
-*.tmp
-*.swp
-
-# 公众号发布器用户凭证配置（含 AppID/AppSecret），只提交 .example 模板
-skills/builtin/skill-wechat-publisher/wechat-publisher.yaml
-
-# 视频产线内置 SDK：源码+资产入库，但重依赖/缓存/模型不入库（bootstrap.sh 本地还原）
-skills/builtin/video-production/vendor/**/node_modules/
-skills/builtin/video-production/vendor/**/.remotion/
-skills/builtin/video-production/vendor/**/models/
-skills/builtin/video-production/vendor/**/*large-v3*
+# Computer CLI build and test artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/

@@ -1,439 +1,187 @@
-<p align="left">
-  <img src="assets/readme/logos/zhejiang_university_horizontal_readme.png#gh-light-mode-only" width="106" align="middle" alt="Zhejiang University">
-  <img src="assets/readme/logos/zhejiang_university_horizontal_dark.png#gh-dark-mode-only" width="106" align="middle" alt="Zhejiang University">
-  &nbsp;&nbsp;&nbsp;
-  <img src="assets/readme/logos/peking_university_horizontal_red.png#gh-light-mode-only" width="98" align="middle" alt="Peking University">
-  <img src="assets/readme/logos/peking_university_horizontal_dark.png#gh-dark-mode-only" width="98" align="middle" alt="Peking University">
-</p>
+<div align="center">
 
-<p align="center">
-  <img src="assets/readme/brand.png#gh-light-mode-only" width="640" alt="Easel">
-  <img src="assets/readme/brand-dark.png#gh-dark-mode-only" width="640" alt="Easel">
-  <br>
-  <img src="assets/readme/logos/real_lab_horizontal_readme.png" width="74" alt="REAL Lab">&thinsp;&thinsp;<img src="assets/readme/logos/opendcai_lab_horizontal_readme.png#gh-light-mode-only" width="83" alt="OpenDCAI Lab"><img src="assets/readme/logos/opendcai_lab_horizontal_readme_dark.png#gh-dark-mode-only" width="83" alt="OpenDCAI Lab">
-</p>
+<img src="docs/media/logo.png" alt="Mika" width="88" />
 
-<p align="center">
-  <strong>简体中文</strong> · <a href="README_EN.md">English</a>
-</p>
+# Mika
 
-<p align="center">
-  你的私人、持续进化的社媒运营助手<br>
-  从一个想法开始，完成发现、策划、创作、发布与复盘。
-</p>
+**An AI assistant on your phone: say what you need, and it works your apps and the web until it's done.**
 
-<p align="center">
-  <a href="https://zju-real.github.io/Easel/"><img src="https://img.shields.io/badge/Easel-Project_Page-F05A3C?style=flat-square&logo=googlechrome&logoColor=white" alt="Easel Project Page"></a>
-  <img src="https://img.shields.io/badge/OpenClaw-powered-111827?style=flat-square" alt="Powered by OpenClaw">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
-  <a href="docs/skill-function-mapping.md"><img src="https://img.shields.io/badge/Skills-113-0F9D8A?style=flat-square" alt="113 Skills"></a>
-  <a href="https://github.com/ZJU-REAL/Easel/stargazers"><img src="https://img.shields.io/github/stars/ZJU-REAL/Easel?style=flat-square&color=F6C344" alt="GitHub Stars"></a>
-  <a href="https://github.com/ZJU-REAL/Easel/releases/latest"><img src="https://img.shields.io/github/v/release/ZJU-REAL/Easel?style=flat-square&color=0F9D8A&label=release" alt="Latest release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-2EA44F?style=flat-square" alt="License: Apache 2.0"></a>
-  <a href="assets/readme/wechat-group.png"><img src="https://img.shields.io/badge/微信群-加入交流-07C160?style=flat-square&logo=wechat&logoColor=white" alt="WeChat Group"></a>
-</p>
+It works on a hidden background screen, so you can keep using your phone.
 
-<p align="center">
-  <a href="https://trendshift.io/repositories/195527?utm_source=trendshift-badge&utm_medium=badge&utm_campaign=badge-trendshift-195527" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/195527/daily?language=Python" alt="ZJU-REAL%2FEasel | Trendshift" width="250" height="55"/></a> <a href="https://trendshift.io/repositories/195527?utm_source=trendshift-badge&utm_medium=badge&utm_campaign=badge-trendshift-195527" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/195527/weekly?language=Python" alt="ZJU-REAL%2FEasel | Trendshift" width="250" height="55"/></a>
-</p>
+<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/badge/Download%20APK-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" /></a>
 
-![Easel 产品宣传海报](assets/readme/poster.png)
+<a href="https://github.com/wangzan101/Mika/stargazers"><img src="https://img.shields.io/github/stars/wangzan101/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
+<a href="https://github.com/wangzan101/Mika/releases"><img src="https://img.shields.io/github/downloads/wangzan101/Mika/total?label=downloads&color=2ea043" alt="downloads" /></a>
+<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/wangzan101/Mika?include_prereleases&label=version" alt="version" /></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey" alt="license" /></a>
 
-## 🎨 Easel 是什么
+English · [简体中文](docs/readme/README.zh-CN.md) · [繁體中文](docs/readme/README.zh-Hant.md) · [日本語](docs/readme/README.ja.md) · [한국어](docs/readme/README.ko.md) · [Español](docs/readme/README.es.md)
 
-Easel 是一个面向社交媒体创作者的开源内容工作台。它把 OpenClaw Agent、账号画像、内容技能和真实的媒体工具接在一起，让 Agent 不只回答“应该怎么做”，而是直接把内容做出来并归档，且可实现直接/按需发布。
+<br/>
 
-你可以把它理解成一个会记住你的内容搭档：它了解账号定位、受众、风格、平台限制和历史表现，从热点发现一直陪你做到发布，再把结果带回下一次创作。
+<img src="docs/media/wechat-send-side.gif" alt="From one sentence, Mika opens WeChat on its background screen, finds the contact and sends the message" width="640" />
 
-Easel 宣传演示：
+<sub>"Send a message to File Transfer": Mika's chat on the left, each step on its background screen on the right (4× speed; chat list blurred)</sub>
 
-https://github.com/user-attachments/assets/4dd060dc-53dd-4bb2-99a3-e65ab6f65166
+</div>
 
-Easel 围绕五个连续工作流展开：**发现**适合账号的热点与机会，**策划**选题、标题、脚本和排期，
-**创作**图文、音频与视频内容，**发布**经过检查和平台适配的成品直接到对应平台，再通过**归因**分析表现并把有效经验沉淀回账号画像。
-
-#### 📌 使用提示与研究愿景
-
-> - **推荐使用 Web 前端**：前端提供完整的会话、素材、账号、画像、内容库和发布管理能力，体验和功能比单独使用 CLI 更全面，也是我们推荐的使用方式；部分终端专有的显示问题见[已知问题](docs/known-issues.md)。
-> - **谨慎自动发布到小红书**：小红书平台可能检测自动化操作，存在验证、限流或账号风控风险；建议使用预览与发布前检查，并由用户确认后手动发布，其他平台正常。
-> - **从研究走向真实生活**：Easel 是我们将研究成果应用到真实社媒创作场景的一次实践。后续我们会继续研究 AI 在社媒场景中的社交智能，让 Agent 更好地理解创作者、受众与真实互动。
-
-## ✨ 为什么是 Easel
-
-- **一个 Agent 贯穿完整链路**：发现热点、评估选题、规划日历、生成文案与视觉、制作视频、发布和归因在同一个工作流中完成。
-- **画像驱动，而不是一次性生成**：每个账号有独立的定位、风格、受众、平台、偏好和记忆，输出会越来越贴合真实账号。
-- **技能是真执行，不是功能清单**：图片、卡片、配音、字幕、剪辑、短剧和发布技能都配有可运行脚本，成品写入 `outputs/`。
-- **一份素材，多种平台形态**：同一主题可以改写成小红书卡片、短视频、知乎长文或短帖，并遵循不同平台的格式和字数要求。
-- **项目化保存产物**：内容、素材、中间文件和元数据按项目归档，后续修改、重试和发布不会散落在聊天记录里。
-- **真实发布与复盘闭环**：目前支持小红书、抖音、快手、知乎、B 站、微信视频号、微信公众号七个平台的登录、适配和发布，并可回收账号数据。
-
-## 🧭 五层内容工作流
-
-1. **发现**：聚合热榜、行业新闻、竞品动态和用户讨论，筛选真正适合账号的机会。
-2. **策划**：把机会变成选题、标题、脚本和内容矩阵，写入内容日历。
-3. **创作**：生成文案、卡片、海报、信息图、音频、视频、短剧和论文解读等可发布素材。
-4. **发布**：按平台适配标题、正文、画幅和媒体要求，执行发布前检查并发送到已登录账号。
-5. **归因**：读取播放、互动、评论和内容表现，把有效结构和偏好沉淀回账号画像。
-
-## 🧰 已经落地的能力
-
-| 能力层 | 已实现功能 |
-|---|---|
-| **发现** | 全网热搜聚合、垂类趋势研究、内容缺口分析、节日与事件日历、平台算法动态、竞品分析、行业资讯、跨平台差异、RSS 聚合、UGC 发现 |
-| **策划** | 账号定位分析、受众画像、人设与声音构建、账号诊断、选题矩阵、选题评分、热点结合、系列内容规划、标题与 Hook、文章大纲、分镜脚本、内容日历、跨平台复用、直播策划、营销活动与商单方案 |
-| **文字与视觉** | 社媒文案、短视频与中长视频脚本、小红书笔记、长文、小说、去 AI 感改写、风格迁移、论文解读、金句卡、小红书知识卡、海报、信息图、数据图表、思维导图、对比图、电商详情图、Meme、AI 生图、图片增强、去背景与批处理 |
-| **音频与视频** | 文字转语音、多角色配音、声音克隆、AI 音乐、降噪、混音、语音转文字、音频可视化、AI 视频、AI 短剧、字幕与翻译、视频剪辑、长视频切片、直播高光、横竖版转换、片头片尾、相册视频、音乐卡点、绿幕换背景、视频转图文与章节目录 |
-| **发布与归因** | 发布质量门禁、敏感与版权风险检查、平台搜索优化、发布 Checklist、多平台格式适配；小红书、抖音、快手、知乎、B 站、微信视频号、微信公众号登录与发布；内容日历回写、账号数据、评论洞察、内容复盘、ROI 与画像记忆 |
-
-## 🖥️ 工作台功能示例
-
-下面只展示 Easel 工作台中的四个代表性功能，并不是完整功能清单。更多发现、策划、创作、发布和归因能力，
-可以在工作台的技能库或[能力地图](docs/skill-function-mapping.md)中查看。
+## Get things done with one sentence
 
 <table>
-  <tr>
-    <td width="50%" valign="top">
-      <strong>🧬 账号画像</strong><br>
-      <sub>通过基础信息、社媒链接、运营意图和偏好红线建立账号上下文；一份画像可以跨多个平台和会话持续使用。</sub><br><br>
-      <img src="assets/readme/features/profile.png" width="100%" alt="Easel 账号画像配置">
-    </td>
-    <td width="50%" valign="top">
-      <strong>🔥 热点雷达</strong><br>
-      <sub>聚合现有平台热榜，并通过标准协议接入你自己的 Python 采集脚本、HTTP 服务或 RSS/Atom 订阅，从更多来源寻找适合账号的选题。</sub><br><br>
-      <img src="assets/readme/features/discover.png" width="100%" alt="Easel 多平台热点雷达">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <strong>📅 内容日历</strong><br>
-      <sub>统一管理选题、草稿、待发、已发和平台活动，结合节日节点规划内容，并记录每一天的发布安排。</sub><br><br>
-      <img src="assets/readme/features/calendar.png" width="100%" alt="Easel 内容日历">
-    </td>
-    <td width="50%" valign="top">
-      <strong>📣 发布中心</strong><br>
-      <sub>从一份母版内容生成多平台版本，集中完成格式适配、媒体附件、发布前检查、预览和真实发布。</sub><br><br>
-      <img src="assets/readme/features/publish.png" width="100%" alt="Easel 多平台发布中心">
-    </td>
-  </tr>
+<tr>
+<td align="center" width="33%"><img src="docs/media/wechat-group.gif" width="230" alt="Reads through a WeChat group and summarizes today's chat" /><br/><b>"What did the group talk about today?"</b><br/><sub>Scrolls through the chat in the background, then sums it up</sub></td>
+<td align="center" width="33%"><img src="docs/media/amazon-cart.gif" width="230" alt="Picks a charger on a shopping site and adds it to the cart" /><br/><b>"A charger under $30, rated 4.5 stars or more"</b><br/><sub>Adds the pick to the cart and stops before checkout</sub></td>
+<td align="center" width="33%"><img src="docs/media/xhs-summary.gif" width="230" alt="Summarizes a creator's recent posts" /><br/><b>"What has this creator posted lately?"</b><br/><sub>Opens the app, reads post by post, then sums it up</sub></td>
+</tr>
 </table>
 
-## 🖼️ 真实产物
-
-这些文件来自 Easel 的实际工作流，主页中也有同一批案例的分类展示。
-README 的品牌图、海报、案例图片和视频统一保存在 `assets/readme/`；产品主页使用独立的
-`web/static/showcase/` 素材，其中视频保持为 6 秒轻量预览。
-
-### 📚 论文解读与知识卡片
-
-<p align="center">
-  <img src="assets/readme/showcase/spatialevo-cards-strip.jpg" width="49%" alt="SpatialEvo 论文解读卡片">
-  <img src="assets/readme/showcase/spatialladder-cards-strip.jpg" width="49%" alt="SpatialLadder 论文解读卡片">
-</p>
-<p align="center"><sub>SpatialEvo · 论文解读　/　SpatialLadder · VLM 视觉叙事</sub></p>
-
-<p align="center">
-  <img src="assets/readme/showcase/culture-mt-cards-strip.jpg" width="49%" alt="CULTURE-MT 研究卡片">
-  <img src="assets/readme/showcase/knowu-cards-strip.jpg" width="49%" alt="KnowU-Bench 论文解读卡片">
-</p>
-<p align="center"><sub>CULTURE-MT · 文化翻译　/　KnowU-Bench · 侦探漫画</sub></p>
-
-<p align="center">
-  <img src="assets/readme/showcase/agentg2-cards-strip.jpg" width="49%" alt="AGENT G2 论文解读卡片">
-  <img src="assets/readme/showcase/pause-cards-strip.jpg" width="49%" alt="Pause or Fabricate 论文解读卡片">
-</p>
-<p align="center"><sub>AGENT G2 · 暗夜英雄　/　Pause or Fabricate · 角色化科普</sub></p>
-
-### 📖 小说与故事
-
-<p align="center">
-  <img src="assets/readme/showcase/novel-xiuxian.png" width="24%" alt="外门弟子整顿修仙界">
-  <img src="assets/readme/showcase/novel-horror.png" width="24%" alt="中元节那晚">
-  <img src="assets/readme/showcase/novel-romance.png" width="24%" alt="我和相亲对象互演正常人">
-  <img src="assets/readme/showcase/novel-seventh.png" width="24%" alt="第七格">
-</p>
-<p align="center"><sub>搞笑修仙　/　恐怖短篇　/　爱情喜剧　/　悬疑故事</sub></p>
-
-### 🌿 生活分享与梗内容
-
-<p align="center">
-  <img src="assets/readme/showcase/life-color-cards-strip.jpg" width="49%" alt="丰富多彩的生活">
-  <img src="assets/readme/showcase/life-mountain-cards-strip.jpg" width="49%" alt="大山大水">
-</p>
-<p align="center"><sub>生活方式　/　自然记录</sub></p>
-
-<p align="center">
-  <img src="assets/readme/showcase/life-chengdu-cards-strip.jpg" width="49%" alt="成都乡土生活">
-  <img src="assets/readme/showcase/jokes-cards-strip-wide.jpg" width="49%" alt="开学趣事梗卡">
-</p>
-<p align="center"><sub>城市生活　/　梗内容</sub></p>
-
-### 🎬 视频成片
-
-为便于快速浏览，这里使用可点击的视频封面。点击封面查看最长 1 分钟的轻量预览，点击封面下方的标题
-查看完整成片。
-
-**论文解读视频**
-
-<p align="center">
-  <a href="assets/readme/videos/preview/spatialladder-explainer.mp4"><img src="assets/readme/videos/thumbnails/spatialladder-explainer.jpg" width="49%" alt="播放 SpatialLadder 论文解读预览"></a>
-  <a href="assets/readme/videos/preview/culture-mt-explainer.mp4"><img src="assets/readme/videos/thumbnails/culture-mt-explainer.jpg" width="49%" alt="播放 CULTURE-MT 论文解读预览"></a>
-</p>
-<p align="center"><sub>▶ 点击封面播放预览 · 查看完整视频：<a href="assets/readme/videos/full/spatialladder-explainer.mp4">SpatialLadder</a>　/　<a href="assets/readme/videos/full/culture-mt-explainer.mp4">CULTURE-MT</a></sub></p>
-
-**口播、连续剧与 AI 角色短视频**
-
-<p align="center">
-  <a href="assets/readme/videos/preview/ordinary-person.mp4"><img src="assets/readme/videos/thumbnails/ordinary-person.jpg" width="24%" alt="播放普通人口播剧预览"></a>
-  <a href="assets/readme/videos/preview/hanako-change.mp4"><img src="assets/readme/videos/thumbnails/hanako-change.jpg" width="24%" alt="播放花子的转变预览"></a>
-  <a href="assets/readme/videos/preview/cyber-cultivation.mp4"><img src="assets/readme/videos/thumbnails/cyber-cultivation.jpg" width="24%" alt="播放赛博修仙预览"></a>
-  <a href="assets/readme/videos/preview/cyber-turtle.mp4"><img src="assets/readme/videos/thumbnails/cyber-turtle.jpg" width="24%" alt="播放赛博吃播甲鱼预览"></a>
-</p>
-<p align="center"><sub>▶ 点击封面播放预览 · 查看完整视频：<a href="assets/readme/videos/full/ordinary-person.mp4">普通人</a>　/　<a href="assets/readme/videos/full/hanako-change.mp4">花子的转变</a>　/　<a href="assets/readme/videos/full/cyber-cultivation.mp4">赛博修仙</a>　/　<a href="assets/readme/videos/full/cyber-turtle.mp4">赛博吃播甲鱼</a></sub></p>
-
-**氛围影像与横版内容**
-
-<p align="center">
-  <a href="assets/readme/videos/preview/jilong-news.mp4"><img src="assets/readme/videos/thumbnails/jilong-news.jpg" width="32%" alt="播放西藏吉隆泥石流预览"></a>
-  <a href="assets/readme/videos/preview/daomu-book.mp4"><img src="assets/readme/videos/thumbnails/daomu-book.jpg" width="32%" alt="播放盗墓笔记小说介绍预览"></a>
-  <a href="assets/readme/videos/preview/zju-intro.mp4"><img src="assets/readme/videos/thumbnails/zju-intro.jpg" width="32%" alt="播放浙江大学介绍预览"></a>
-</p>
-<p align="center"><sub>▶ 点击封面播放预览 · 查看完整视频：<a href="assets/readme/videos/full/jilong-news.mp4">西藏吉隆泥石流</a>　/　<a href="assets/readme/videos/full/daomu-book.mp4">盗墓笔记小说介绍</a>　/　<a href="assets/readme/videos/full/zju-intro.mp4">浙江大学</a></sub></p>
-
-## 🚀 快速开始
-
-环境要求：Linux、macOS 或 Windows 10/11、Python 3.10 及以上、Python `venv` 模块和 `git`。安装向导会检查 Node.js 24.16+（24.x）、26.1+（26.x）或 27+（25.x 与 26.0 不兼容）、FFmpeg、Playwright/Chromium；缺少 Node.js 时会按系统给出安装引导。
-
-```bash
-git clone https://github.com/ZJU-REAL/Easel.git
-cd Easel
-bash setup.sh
-```
-
-Windows 原生安装请在 PowerShell 中执行（不需要 WSL）：
-
-```powershell
-git clone https://github.com/ZJU-REAL/Easel.git
-cd Easel
-Set-ExecutionPolicy -Scope Process Bypass
-.\setup.ps1
-```
-
-Windows 安装器会优先通过 `winget` 自动安装缺失的 Python 3.10+、Node.js 24.16+（24.x）、26.1+（26.x）或 27+、Git 和 FFmpeg；25.x 与 26.0 不兼容。如果系统没有 `winget`，再使用官方安装器安装并加入 PATH。随后安装器会创建项目内 `.venv`，安装 Python/Node 依赖、前端生产包和 Playwright Chromium，并使用独立的 `easel` OpenClaw profile。安装完成后可运行 `.venv\Scripts\easel.exe doctor` 检查环境。
-
-安装器支持 Windows 自带的 PowerShell 5.1，安装后可直接运行 `.venv\Scripts\easel.exe web` 启动工作台。原生安装与 Web/CLI 入口已经提供；各技能及浏览器发布的 Windows 全链路兼容仍在持续完善。
-
-`bash setup.sh` 是可重复运行的引导式安装器，直接执行即可，不需要先手动安装 Easel 依赖。安装过程中会：
-
-1. 检查 Python、Python `venv`、Node.js 和 Git；FFmpeg 缺失时会尝试通过系统包管理器安装，装不上只会降级提示（视频/音频类技能不可用），不再中断安装。
-2. 询问是否创建或复用项目虚拟环境 `.venv/`；默认选择 `Y`。如果系统缺少 `venv`，会提示安装对应系统包（例如 Debian/Ubuntu 的 `python3-venv`）。
-3. 检查或安装 OpenClaw，并创建独立的 `easel` profile，不覆盖用户已有的 `~/.openclaw/`。
-4. 安装 Python、Web、媒体和浏览器发布依赖，构建 React Web 工作台并安装 Chromium。Python 依赖与前端构建失败会停止；Chromium 下载失败只降级提示（浏览器登录/发布不可用）。
-5. 同步 skills、校验 OpenClaw 配置并启动 gateway。
-
-**模型 API Key 在浏览器里配，安装器不再在终端询问。** 装完运行 `easel web`，首次打开会直接停在「设置 → 模型配置」，填入 Key 保存即可 —— Easel 会自动写好 OpenClaw 配置并重启 gateway，不需要再跑一遍 `setup.sh`。相比终端向导，这里还能拉取可用模型列表、做连通性自测。也可以直接编辑 `.env` 填好 Key，再运行 `easel doctor` 复检。
-
-安装器全程非交互（只有「是否创建 `.venv`」一问，非交互环境下按默认值），适合 CI 与自动化。非致命问题（FFmpeg、Chromium、gateway 启动、模型未配置等）会收集起来在结尾汇总，并写入 `outputs/_install/last-install.json` 供 `easel doctor` 复述，安装本身仍以 0 退出。若希望这些问题直接让安装失败，设 `EASEL_SETUP_STRICT=1`。
-
-安装完成后，`easel` 命令安装在项目的 `.venv` 中。先激活虚拟环境再运行（每次新开终端都要先激活）：
-
-```bash
-source .venv/bin/activate    # 激活后 easel 命令才可用（Windows：.venv\Scripts\activate）
-easel doctor                 # 检查运行环境
-easel ping                   # 实际测试 gateway 和 Agent
-easel web                    # 启动 Web 工作台
-# 或：easel chat              # 启动终端对话
-```
-
-> 如果提示 `easel: command not found`，就是虚拟环境没激活。也可以不激活、直接用完整路径运行，例如 `.venv/bin/easel doctor`（Windows：`.venv\Scripts\easel.exe doctor`）。
-
-启动 Web 工作台后访问 `http://localhost:7860`。安装完成后可以运行 `easel doctor` 检查环境，
-运行 `easel ping` 检查 gateway 和 Agent 连通性。
-
-如果 Easel 运行在 VSCode Remote SSH 连接的服务器上，需要在 VSCode 的“端口”面板
-转发服务器端口 `7860`，再打开面板显示的本地转发地址（本地端口可能不同）。
-服务器的 `localhost` 不是你电脑的 `localhost`；不要为了访问而把无认证的工作台暴露到公网。
-
-安装器会统一安装 Web、媒体处理和浏览器发布所需的 Python 依赖：
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install -e .
-python3 -m playwright install chromium
-# 手动安装时仍需提前安装 ffmpeg
-```
-
-## ⚙️ 配置说明
-
-最小配置只需要在项目根目录 `.env` 中提供一个可用的 LLM：
-
-```bash
-ANTHROPIC_API_KEY=你的_API_Key
-CLAUDE_MODEL=anthropic/claude-sonnet-4-6
-```
-
-也可以使用 OpenAI 或 OpenAI-compatible 服务：
-
-```bash
-OPENAI_API_KEY=你的_API_Key
-OPENAI_BASE_URL=https://api.openai.com/v1
-OPENAI_MODEL=gpt-4o
-```
-
-如果聊天 API 不提供向量模型，请单独配置 Embedding API；否则 OpenClaw 会默认请求 `text-embedding-3-small`，可能得到“模型不可用”。不配置独立向量 API 时，Easel 会显式使用关键词记忆检索，不会反复请求聊天端点的 embedding 模型：
-
-```dotenv
-EASEL_EMBEDDING_API_KEY=你的向量_API_Key
-EASEL_EMBEDDING_BASE_URL=https://your-embedding-provider.example/v1
-EASEL_EMBEDDING_MODEL=你的向量模型名
-```
-
-修改向量 provider 或模型后，使用对应 profile 重建一次索引：
-
-```bash
-openclaw --profile easel memory index --force
-```
-
-或者使用其他 Anthropic-compatible 服务：
-
-```bash
-EASEL_LLM_API_KEY=你的_API_Key
-EASEL_LLM_BASE_URL=https://你的服务地址/v1
-CLAUDE_MODEL=你的模型名
-```
-
-安装器会把这些标准配置同步到 OpenClaw。OpenClaw 支持但 Easel 没有预设环境变量映射的其他 provider，
-可以按 OpenClaw 自身的 provider/auth 配置方式配置；Easel 不会覆盖这些自定义配置。
-
-在 Web 设置的聊天通道中，自定义供应商可勾选“该模型会思考”，保存后会写入模型的
-`reasoning: true`。OpenAI 兼容协议还可选择思考格式（OpenAI、DeepSeek 等），需与上游
-接口实际支持的格式一致；原生 Anthropic 协议使用其自身的思考格式，无需另选。
-新增行默认关闭，避免对非推理模型发送不支持的参数；已有声明会回显。取消勾选会写入
-`reasoning: false`，仅移除该模型的思考相关兼容项，不影响工具等其它能力声明。
-保存 API 不传 `thinking` 时保持原有声明；启用时保留已有努力档位映射，不推测上游支持的档位。
-思考格式会写入 OpenClaw 的 `compat.thinkingFormat`，实际发送哪些参数由其版本和模型适配器决定；
-例如 OpenClaw 2026.9.8 对普通自定义模型仍可能只发送 `reasoning_effort`，不是任意方言转换器。
-这只是能力声明，不保证网关支持推理，亦不覆盖 `EASEL_THINKING_LEVEL=off`；
-API 直连模式不提供此 OpenClaw 专用开关。
-对显式声明 `reasoning: false` 的当前模型，Web 调用 OpenClaw CLI 时会使用 `--thinking off`，
-避免禁用后仍请求不支持的 `medium` 档位。
-
-`.env.example` 还列出了视频、音乐、语音等可选模型配置。只需要配置实际使用的能力，也可以在 Web
-工作台的“技能库”中填写；没有配置的媒体 Skill 不会影响聊天、策划和文本创作。常见可选项包括：
-
-| 能力 | 配置入口 | 额外依赖 |
-|---|---|---|
-| AI 视频 | `VIDEO_PROVIDER` 及对应服务的 Key、URL、模型 | 相应视频生成服务 |
-| AI 音乐 | `MUSIC_PROVIDER` 及对应服务配置 | 相应音乐生成服务 |
-| 云端配音 | `VOICE_PROVIDER` 及对应服务配置 | 相应语音生成服务 |
-| 图片与音视频处理 | 无额外模型时也可使用本地工具 | FFmpeg |
-| 浏览器发布 | 在 Web“账号”页面登录目标平台 | Playwright Chromium、有效平台账号 |
-
-## 🧩 使用 Easel
-
-发布中心提供“自动发布 / 人工审核发布”两条可选路径，默认保留原有自动发布流程。人工路径采用“AI 排版 → 人工审核 → 复制/导出 → 官方发布页亲自提交”，修改稿件或素材后需重新审核，导出和排期不等于已发布；公众号支持富文本复制和 HTML 预览。页面切换不更改全局发布权限；如需在 Web 后端禁用自动提交，可配置 `EASEL_PUBLISH_MODE=manual`。配置边界、登录状态和导出说明见[人工发布工作流](docs/manual-publishing.md)。
-
-常用入口：
-
-| 命令 | 作用 |
-|---|---|
-| `easel web [--port 7860]` | 启动 Web 工作台 |
-| `easel chat` | 在终端开启多轮对话并选择账号画像 |
-| `easel skill <name> -i "..." [-p <画像>]` | 直接运行指定 Skill；输入也可以是文件路径 |
-| `easel doctor` | 检查 Python、Node.js、OpenClaw 和关键配置 |
-| `easel ping` | 检查 gateway 与 Agent 连通性 |
-| `easel gateway start\|stop\|restart\|status\|logs` | 管理 OpenClaw gateway |
-
-所有技能都通过 Easel 的 Agent 执行。Agent 会读取对应 `SKILL.md`，调用脚本和工具，并把产物保存到 `outputs/`。
-
-```bash
-easel skill quality-gate -i "帮我检查这条小红书文案"
-easel skill social-content -i "写一条介绍空间智能的微博"
-easel skill quality-gate -i "这是一段待发布文案" -p 科技数码达人
-```
-
-Web 工作台提供同样的能力，并额外管理会话、素材、账号、画像、内容库和发布状态。拖入对话框的素材会作为结构化附件传给 Agent，用户消息只显示实际输入的文字。
-
-## 🧬 账号画像
-
-一个画像对应 `profiles/<名字>/` 目录，包含六个维度：定位、风格、受众、平台、偏好与红线、长期记忆。
-
-```bash
-cp -r profiles/_template "profiles/我的账号"
-```
-
-在 Web 的“画像”页面可以直接创建和编辑；同一画像可以跨多个已登录平台使用。
-
-## 🏗️ 项目结构
-
-```text
-Easel/
-├── easel/                    Python CLI：chat / web / skill / doctor / ping
-├── web/                      FastAPI 后端与 React 工作台
-├── skills/builtin/           发现、策划、制作、发布、归因技能
-├── skills/shared/            跨技能脚本与参考资料
-├── assets/                   品牌、README 媒体与用户导入素材
-├── profiles/                 账号画像（每个画像一个目录）
-├── outputs/                  内容项目与最终产物
-├── agents/                   共享 Agent 工作区、底座配置与同步脚本
-└── docs/                     能力规范、能力地图与架构文档
-```
-
-Easel 使用独立的 `easel` OpenClaw profile，不会覆盖你本机已有的 OpenClaw 配置。Web 默认运行在 `7860`；gateway 端口由 OpenClaw 决定（非默认 profile 会分配哈希端口，如 `easel` → `37289`，不是 `18789`），Easel 会自动解析，无需手配。
-
-## 📑 文档
-
-- [热点数据源接入：Python 脚本 / HTTP 服务 / RSS 订阅](docs/trend-collectors.md)
-- [能力地图](docs/skill-function-mapping.md)
-- [SKILL 接口规范](docs/SKILL-SPEC.md)
-- [提示词与架构分层](docs/prompt-stack.md)
-- [上下文预算诊断](docs/context-budget-diagnostics.md)
-- [已知问题](docs/known-issues.md)
-- [完整致谢](docs/ACKNOWLEDGMENTS.md)
-
-## 🗺️ 开发计划（Roadmap）
-
-按优先级排列，欢迎在 Issue / PR 中认领或补充：
-
-- [ ] **1. 适配 Windows 系统** —— 完善原生 Windows 下安装、路径与编码、浏览器发布等全链路兼容。
-- [ ] **2. 安装简易化** —— 降低上手门槛，减少手动步骤，提供更顺滑的一键安装体验。
-- [ ] **3. 优化页面 Agent 交互** —— 改进 Web 工作台的对话交互、加载逻辑与流式反馈等体验细节。
-- [ ] **4. 适配更多 Agent Harness** —— 支持 OpenClaw 之外的更多 Agent 运行框架，例如 Claude Code、DeepSeek harness、Codex 等。
-
-## 🙏 致谢
-
-Easel 的技能体系和工作流受益于许多优秀的开源项目、工具与内容方法论。感谢所有原作者和社区贡献者；
-具体项目、用途和许可信息请查看[完整致谢](docs/ACKNOWLEDGMENTS.md)。
-
-欢迎参与贡献与讨论。有想法、问题或改进建议，欢迎提交 Issue 或 PR；也欢迎扫码加入我们的微信交流群：
-
-<p align="center">
-  <img src="assets/readme/wechat-group.png" width="240" alt="Easel 微信交流群二维码">
-</p>
-<p align="center"><sub>Easel 交流群 · 二维码定期更新，若已失效请通过 Issue 联系我们</sub></p>
-
-### 🤝 Contributors
+<details>
+<summary>More demos</summary>
 
 <table>
-  <tr>
-    <td align="center" width="84"><a href="https://github.com/lidingm"><img src="https://github.com/lidingm.png?size=96" width="72" height="72" alt="lidingm"><br><strong>lidingm</strong></a></td>
-    <td align="center" width="84"><a href="https://github.com/qywMichelle"><img src="https://github.com/qywMichelle.png?size=96" width="72" height="72" alt="qywMichelle"><br><strong>qywMichelle</strong></a></td>
-    <td align="center" width="84"><a href="https://github.com/wulinjuan"><img src="https://github.com/wulinjuan.png?size=96" width="72" height="72" alt="wulinjuan"><br><strong>wulinjuan</strong></a></td>
-    <td align="center" width="84"><a href="https://github.com/arctanxarc"><img src="https://github.com/arctanxarc.png?size=96" width="72" height="72" alt="arctanxarc"><br><strong>arctanxarc</strong></a></td>
-    <td align="center" width="84"><a href="https://github.com/hongxingli319"><img src="https://github.com/hongxingli319.png?size=96" width="72" height="72" alt="hongxingli319"><br><strong>hongxingli319</strong></a></td>
-    <td align="center" width="84"><a href="https://github.com/mengyuyuan"><img src="https://github.com/mengyuyuan.png?size=96" width="72" height="72" alt="mengyuyuan"><br><strong>mengyuyuan</strong></a></td>
-    <td align="center" width="84"><a href="https://github.com/Dear47"><img src="https://github.com/Dear47.png?size=96" width="72" height="72" alt="Dear47"><br><strong>Dear47</strong></a></td>
-  </tr>
+<tr>
+<td align="center" width="33%"><img src="docs/media/boss-greet.gif" width="230" alt="Greets recruiters for 3 jobs on a job site" /><br/>Greets recruiters for 3 jobs on a job site</td>
+<td align="center" width="33%"><img src="docs/media/google-flights.gif" width="230" alt="Finds the cheapest nonstop flight" /><br/>Finds the cheapest nonstop from San Francisco to New York</td>
+<td align="center" width="33%"><img src="docs/media/hacker-news.gif" width="230" alt="Reads out the top 5 stories and their points" /><br/>Reads out the top 5 stories on a news site</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/media/job-greet.jpg" width="230" alt="Finds jobs and greets recruiters" /><br/>Finds jobs and greets recruiters</td>
+<td align="center"><img src="docs/media/music-vip.jpg" width="230" alt="Watches ads to unlock music perks" /><br/>Watches ads to unlock music perks</td>
+<td align="center"><img src="docs/media/food-order.jpg" width="230" alt="Orders takeout with stacked discounts and asks you before paying" /><br/>Orders takeout with stacked discounts, asks before paying</td>
+</tr>
 </table>
 
-## ⚖️ 许可证
+</details>
 
-[Apache 2.0](LICENSE)
+<sub>Several demos use apps popular in China: WeChat is the main messaging app there, and Xiaohongshu (RED) is a lifestyle and social platform. Mika isn't tied to them; it works with any app or website on your phone.</sub>
 
-## 🌟 Star 趋势
+## Why Mika
 
-<p align="center">
-  <a href="https://star-history.com/#ZJU-REAL/Easel&Date">
-    <img src="https://api.star-history.com/svg?repos=ZJU-REAL/Easel&type=Date" width="720" alt="Easel Star History Chart">
-  </a>
-</p>
+| | |
+|---|---|
+| 📱 **Leaves your screen alone** | Opens apps, taps, types and scrolls on a separate background screen while you use your phone as usual; tap the small live view whenever you want to watch |
+| 🧩 **Works with any app** | Looks at the screen and finds buttons the way a person does: no app APIs, no per-app integration |
+| 🌐 **Call it from any web page** | In the built-in browser, say what you want on the page you're reading and it works right there; touch the page and it stops |
+| 🧠 **Gets better with use** | Remembers the preferences you tell it, and turns tasks it finishes into skills so next time is faster and steadier |
+| 🔒 **Your data stays on your phone** | There is no Mika server; use your own model API key, or sign in with a ChatGPT, xAI or OpenRouter account |
+| 🆓 **Open source and free** | Apache-2.0, all code public |
+
+## Get started in three steps
+
+1. **Install**: download the APK from [Releases](https://github.com/wangzan101/Mika/releases/latest).
+2. **Connect a model**: in Settings › Model, pick a provider and enter an API key, or just sign in with an account ([models and sign-in](docs/models.en.md)).
+3. **To operate phone apps**: follow the "Set up phone control" wizard in Settings and pair wireless debugging on the phone once ([setup guide](docs/setup-guide.en.md)). Skip this if you only want chat, web and files.
+
+Then try saying: "Set alarms for 9:40 and 10:00 tomorrow morning" or "Check the weather at 8 every morning and tell me only if it will rain".
+
+> 💡 Have a computer handy? Send this to the AI agent on it and it will set everything up for you:<br/>
+> `Follow https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.en.md to install Mika on the Android phone connected over USB.`
+
+## What it can do
+
+| | |
+|---|---|
+| **Operate apps** | Reads long lists and chat histories, taps and types, shares text into apps; hands logins, verification codes and payments to you |
+| **Browse the web** | A built-in desktop-class browser that keeps you signed in, reads pages, downloads and uploads; paces itself and hands block pages to you |
+| **Your current screen** | Double-tap the floating capsule to send the screen you're looking at: "how should I reply?", "note this down" |
+| **Schedules and conditions** | "Remind me at 9 tomorrow", "do this every Friday"; runs on time in the original conversation |
+| **Jump in or stop anytime** | Keep talking while a task runs to add or correct things (long-press to withdraw or edit one Mika hasn't picked up yet); after a stop it reports where it got to, and "continue" picks up from there |
+| **Hold to talk** | Hold the chat input to speak and edit the words before sending; long-press the floating capsule to speak and release to send. Uses the phone’s built-in speech recognition, or a provider’s speech model if it has none |
+| **Files and computing** | A Linux sandbox per conversation runs Python, Node and shell on the files you send (arm64) |
+| **From your computer** | AI tools on your computer can hand Mika tasks through CLI + Skill or MCP ([use Mika from a computer](docs/computer.en.md)) |
+
+By default Mika runs in **Ask mode**: it checks with you only before spending money (placing orders, paying) and just does everything else. You can switch to **Autonomous mode** instead. See [Ask and Autonomous](docs/modes.en.md).
+
+For how each of these works and the finer details, see [features in detail](docs/features.en.md).
+
+<details>
+<summary>Apps and websites with built-in usage knowledge (anything not listed still works)</summary>
+
+The names are shown as they appear in the knowledge files.
+
+<!-- generated:knowledge:start -->
+<!-- Generated by ./gradlew updateReadme; do not edit by hand -->
+| Category | Built in |
+|---|---|
+| **Apps** | Android 设置, 百家号, 哔哩哔哩, BOSS直聘, Chrome, 得到, 抖音, 飞书, Gmail, 即刻, 快手, 领英, QQ邮箱, Telegram, 今日头条, Uber, Uber Eats, 微信, 微博, WhatsApp, 闲鱼, 小红书, 知乎 |
+| **Websites** | Amazon, 哔哩哔哩, Google Calendar, 豆瓣, 抖音, Instagram, Gmail, Google Maps, Telegram, 百度贴吧, 微博, 搜狗微信, WhatsApp, 小红书, 小宇宙, YouTube, 知乎, BOSS直聘 |
+| **How-to skills** | 改 Mika 自己的设置, 账号画像, 把内容整理成文字, 内容工作流, 处理 PDF 文档, 查清一件事, 消息与邮件, 写技能, 小红书发布 |
+<!-- generated:knowledge:end -->
+
+</details>
+
+<details>
+<summary>Supported model providers</summary>
+
+<!-- generated:providers:start -->
+<!-- Generated by ./gradlew updateReadme; do not edit by hand -->
+Presets for DeepSeek, 通义千问, Kimi, 智谱, 硅基流动, 火山方舟, MiniMax, 阶跃星辰, 腾讯混元, 百度千帆, OpenRouter, OpenCode Go, Anthropic, Gemini, OpenAI, xAI, Mistral, Groq, Ollama, LM Studio and more; for any other provider pick Custom (自定义), which takes any OpenAI-compatible, Anthropic, Gemini or OpenAI Responses endpoint.
+<!-- generated:providers:end -->
+
+You can also skip the key and sign in with a ChatGPT (Plus / Pro), xAI / Grok or OpenRouter account. Steps for adding a model, and what to know about each sign-in, are in [models and sign-in](docs/models.en.md).
+
+</details>
+
+## Which phones
+
+| | Requirement |
+|---|---|
+| Chat, web, files | Android 11 or later |
+| Operating phone apps | Android 12 or later; **Android 14+ recommended** (the background screen has its own focus, so it doesn't get in the way of your typing on the main screen) |
+| Linux sandbox | arm64 devices |
+
+Not sure your phone is up to it? Run Settings › Recovery & repair › **Compatibility self-check**: 12 checks in about a minute, and you can [send us the results](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml) in one tap.
+
+## Privacy & safety
+
+- **There is no Mika server**: what you say and what's on your screen go only to the model provider you set up.
+- API keys and memories are stored encrypted on the phone; conversations and run records stay on the device; update checks only contact GitHub.
+- Operating third-party apps and websites automatically may break their terms of service, so use your own judgment. For anything important, use Ask mode and check the results. See the [disclaimer](docs/disclaimer.en.md).
+
+<details>
+<summary><b>FAQ</b></summary>
+
+**Wireless debugging turned itself off?** Android turns it off when you change Wi-Fi or restart. With your permission, Mika turns it back on by itself; if it still can't connect, go back to "Set up phone control" and pair again.
+
+**Can't find wireless debugging on my phone?** Some phone systems leave it out. You can start the phone helper from a computer over USB instead; see the [setup guide](docs/setup-guide.en.md).
+
+**Some screens can't be read or captured?** Pages like payments and password entry block screenshots, so Mika asks you to take over there.
+
+**Can I use a model running on my own computer?** Yes: pick "Custom" as the provider and enter its address on your local network.
+
+**Is the app in English?** Yes. The app UI comes in English, Simplified Chinese, Traditional Chinese, Japanese, Korean, Spanish, Portuguese, Russian and Indonesian, follows your system language, and can be switched in Settings › Language. The built-in app and website knowledge is written in Chinese, but that doesn't limit you: the model reads it fine, and you can talk to Mika in English.
+
+**Where do updates come from?** Only from this repository's [Releases](https://github.com/wangzan101/Mika/releases); you can also upgrade in the app from About › Check for updates.
+
+More answers are in the [FAQ](docs/faq.en.md).
+
+</details>
+
+## Community & contributing
+
+- **Docs**: all docs and a suggested reading order are in the [docs index](docs/README.en.md)
+- **Community**: join the [X group chat](https://x.com/i/chat/group_join/g2116926829198246025/48B52j5svL); to reach the author on WeChat, scan the QR code in the app under About › Contact the author (mention Mika in your request)
+- **Follow the author**: X [@wangzan101](https://x.com/wangzan101)
+- **Report a problem**: [open an issue](https://github.com/wangzan101/Mika/issues/new/choose); About › Send feedback in the app can attach diagnostics
+- **Contribute**: add usage knowledge for an app or website (plain text, no code needed), or contribute code; see the [contributing guide](.github/CONTRIBUTING.md)
+
+## Star History
+
+<a href="https://star-history.com/#wangzan101/Mika&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&theme=dark&v=20261101-1623" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&v=20261101-1623" width="600" />
+  </picture>
+</a>
+
+## Contributors
+
+Thanks to everyone who has helped build Mika:
+
+<a href="https://github.com/wangzan101/Mika/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=wangzan101/Mika&max=100&columns=12" alt="Contributors" />
+</a>
+
+## License
+
+[Apache-2.0](LICENSE) · [NOTICE](NOTICE) · [Third-party components](licenses/THIRD_PARTY_NOTICES.md)
