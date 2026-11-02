@@ -1,7 +1,7 @@
 outcome: Succeeded(answer=等完了, verified=false, note=null, sources=[], unconfirmed=[], reviewed=false)
 
 ## main #1
-system: len=16896 #675c4d88 | You are Mika, the user's personal assistant on their phone. Your job is to get ⏎…
+system: len=16836 #644dda5c | You are Easel, the user's social-content partner on their phone. Your job is to ⏎…
 tools: #5a25ebb5 [wait, ask_user, request_confirmation, end_not_done, phone_list_apps, phone_launch_app, phone_set_alarm, phone_set_timer, phone_add_calendar_event]
 user:
   text #68045003 | 等一会儿

@@ -3,6 +3,7 @@ name: Build Easel APK
 on:
   push:
     branches: [main, easel-mobile-p0]
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
 
@@ -48,6 +49,19 @@ jobs:
 
       - name: Assemble perf APK
         run: ./gradlew :app:assemblePerf --console=plain --stacktrace
+
+      - name: Name release APKs
+        run: |
+          version="$(awk -F'"' '/versionName = /{print $2; exit}' app/build.gradle.kts)"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then version="${GITHUB_REF_NAME#v}"; fi
+          for apk in app/build/outputs/apk/perf/*.apk; do
+            name="$(basename "$apk")"
+            case "$name" in
+              *arm64-v8a*) mv "$apk" "app/build/outputs/apk/perf/Easel-${version}-arm64.apk" ;;
+              *) mv "$apk" "app/build/outputs/apk/perf/Easel-${version}.apk" ;;
+            esac
+          done
+          ls -lh app/build/outputs/apk/perf/*.apk
 
       - name: Write checksums
         run: |

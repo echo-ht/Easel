@@ -29,8 +29,8 @@ is [`.github/workflows/android.yml`](.github/workflows/android.yml).
 - Push to `main` or `easel-mobile-p0`, open a pull request, or run **Build Easel
   APK** manually from the Actions tab.
 - The workflow runs the core and app unit tests, then builds `:app:assemblePerf`
-  and uploads the universal and arm64 APKs plus `SHA256SUMS.txt` as the
-  `easel-apk-<commit>` artifact.
+  and uploads `Easel-<version>.apk`, `Easel-<version>-arm64.apk`, and
+  `SHA256SUMS.txt` as the `easel-apk-<commit>` artifact.
 - Push a `v*` tag to attach the same APKs and checksums to a GitHub Release.
 
 The perf build is optimized, debug-signed, and can be installed over the debug
@@ -51,9 +51,11 @@ back to the user.
 
 ## Next milestones
 
-- Port the remaining Easel skills (cards, video, analytics, calendar) to Mika's
+- P1 in progress: native content calendar and publishing log are stored in the
+  app's private files and exposed to the Agent as `content_plan_*` and
+  `content_publish_log_*` tools.
+- Port the remaining Easel skills (cards, video, analytics) to Mika's
   phone/web/sandbox tool semantics.
-- Add native content-calendar and publishing-center screens.
 - Add an HTML-to-image renderer based on the Android WebView to replace
   Playwright.
 - Add ffmpeg and media scripts to the bundled sandbox rootfs.

@@ -18,7 +18,7 @@ object MikaLinks {
     const val X_GROUP = REPO
 
     /** 检查更新只问 GitHub 发布页(不登录,每小时有次数限制)。 */
-    const val LATEST_RELEASE_API = ""
+    const val LATEST_RELEASE_API = "$REPO/releases/latest"
 
     /** 反馈时预先填进问题模板的设备与版本信息。 */
     data class Device(

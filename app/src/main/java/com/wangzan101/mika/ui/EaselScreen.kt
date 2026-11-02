@@ -22,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wangzan101.mika.easel.EaselOutput
 import com.wangzan101.mika.easel.EaselOutputs
@@ -31,6 +30,7 @@ import com.wangzan101.mika.ui.components.GroupCard
 import com.wangzan101.mika.ui.components.GroupLabel
 import com.wangzan101.mika.ui.components.ListRow
 import com.wangzan101.mika.ui.components.MikaCard
+import com.wangzan101.mika.ui.components.RowChevron
 import com.wangzan101.mika.ui.components.SubPage
 import com.wangzan101.mika.ui.theme.MikaIcons
 import com.wangzan101.mika.ui.theme.MikaSize
@@ -42,9 +42,9 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 
-/** Easel 的账号画像与内容库。 */
+/** Easel 的内容工作台:账号画像、内容规划入口与内容库。 */
 @Composable
-fun EaselScreen(onBack: () -> Unit) {
+fun EaselScreen(onBack: () -> Unit, onOpenCalendar: () -> Unit = {}, onOpenPublishLog: () -> Unit = {}) {
     BackHandler(onBack = onBack)
     val context = LocalContext.current
     val store = remember { EaselProfileStore(context) }
@@ -92,6 +92,25 @@ fun EaselScreen(onBack: () -> Unit) {
             style = MikaType.Hint,
             color = MikaTheme.colors.ink3,
         )
+
+        GroupLabel("内容规划")
+        GroupCard {
+            ListRow(
+                icon = MikaIcons.Clock,
+                title = "内容日历",
+                subtitle = "排选题、看进度，Agent 也能直接读写",
+                first = true,
+                onClick = onOpenCalendar,
+                trailing = { RowChevron() },
+            )
+            ListRow(
+                icon = MikaIcons.Lines,
+                title = "发布记录",
+                subtitle = "已发布与失败的真实结果，带平台、时间和链接",
+                onClick = onOpenPublishLog,
+                trailing = { RowChevron() },
+            )
+        }
 
         Row(
             Modifier.fillMaxWidth().padding(end = 8.dp),
