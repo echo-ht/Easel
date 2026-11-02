@@ -43,12 +43,18 @@ CACHE = os.path.join(ROOT, "build", "sandbox-runtime", "dl")
 CDN = "https://dl-cdn.alpinelinux.org/alpine"
 ARCH = "aarch64"
 # What `apk add` would be asked for. Keep in sync with core SANDBOX_PACKAGES (a JVM test checks it).
-WANT = ["python3", "nodejs", "py3-pillow", "py3-pypdf", "tzdata"]
+WANT = ["python3", "nodejs", "py3-pillow", "py3-pypdf", "ffmpeg", "tzdata"]
 # Install scripts and triggers that a real `apk add` would run on the phone, pinned by SHA-256 of the script, and why
 # the runtime is already right without running them. Any other install script or trigger stops the build.
 SCRIPTS_NOT_RUN = {
     "icu-data-en/.post-install": ("1b60012707d8e5c6735bbe4620a08335e019618b776462da11fe2574d4a3dba4",
                                   "only prints a hint about icu-data-full"),
+    # fc-cache only rewrites the font cache; no fonts ship in the runtime, and ffmpeg reads system fonts at run time
+    "fontconfig/.trigger": ("672cb2670f1085f515f5710e01c5a747830f14acc5fa20ded1fb7d46b282719d",
+                             "only rebuilds the font cache; no fonts are bundled"),
+    # glib only compiles GIO modules / GSettings schemas when those directories are present; this runtime ships neither
+    "glib/.trigger": ("47a959a0b09988b921da0d5880e8f3cabe709890091337943a5a01702caa8567",
+                      "no GIO modules or GSettings schemas are bundled, so the trigger is a no-op"),
     # update-ca-certificates rebuilds /etc/ssl/certs/ca-certificates.crt; the minirootfs already has that file
     # from ca-certificates-bundle, built from the same Mozilla list at the same version
     "ca-certificates/.trigger": ("1bf77c8eae3220b1bd7dd86561d0899315f51d72257c1aeb4066072ed4304fe5",

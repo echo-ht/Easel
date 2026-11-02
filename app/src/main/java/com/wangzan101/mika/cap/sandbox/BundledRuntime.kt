@@ -5,10 +5,10 @@ package com.wangzan101.mika.cap.sandbox
 /** 随安装包自带的运行环境(assets/runtime/rootfs.tar.xz)。 */
 object BundledRuntime {
     const val ASSET = "runtime/rootfs.tar.xz"
-    const val VERSION = "3.22.7-744047570fd8"
-    const val SHA256 = "744047570fd84e94996623e8347efce9528da6d073966e040d064f0f2676f2a2"
-    const val BYTES = 31466196L
+    const val VERSION = "3.22.7-deee6f0bb45b"
+    const val SHA256 = "deee6f0bb45b384d2d7635b158208f84cccd1c67d398cde8ffed2299c4de94a7"
+    const val BYTES = 58252200L
     /** 解出的普通文件总字节数与条目数:解包时的上限按它们定,多一点余量。 */
-    const val FILE_BYTES = 128240382L
-    const val ENTRIES = 3238
+    const val FILE_BYTES = 226237681L
+    const val ENTRIES = 3998
 }

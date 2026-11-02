@@ -1,4 +1,4 @@
-# Easel Mobile (P2)
+# Easel Mobile (P1)
 
 This repository is a fork of [Mika](https://github.com/wangzan101/Mika) used as the
 Android host for Easel. The goal is a phone-only social-content workspace: the
@@ -20,13 +20,26 @@ publishes without a desktop browser.
 - **Content calendar**: the phone keeps plans and a publishing log in app-private
   storage. The Agent uses `content_plan_*` and `content_publish_log_*`; dates are
   validated as real local dates and published records update their plan.
+- **Five-stage workflow**: `内容工作台 → 五层工作流` shows discover, plan,
+  create, publish and attribute with live counts from the local calendar and
+  publishing log. Each stage links to the next phone screen or copies a ready
+  prompt for the Agent.
+- **Publish center**: ready and scheduled plans form a local publishing queue.
+  Copy the publish prompt, run it with the phone Agent, verify in the app, then
+  record the real result. Published and failed records can be filtered.
+- **Material library**: `内容工作台 → 素材库` imports files from the system picker
+  into `Download/Easel`, then previews, shares or deletes them. It only reads
+  files this app created; it does not scan the rest of the phone.
 - **Card rendering**: `render_card` turns self-contained HTML in `/workspace`
   into a PNG on the phone. The Android renderer uses a private VirtualDisplay
   with Presentation, WindowManager and software-Canvas fallbacks, disables
   JavaScript/network/local-file access, and returns a deterministic layout audit.
-- **Skills**: `content-workflow`, `content-profile`, `xhs-publish`,
-  `card-design`, and `card-quote` are bundled into
-  `core/src/main/resources/skills/` and indexed at build time.
+- **Skills**: 39 bundled skills cover writing, planning, Xiaohongshu, Douyin,
+  Kuaishou, Bilibili, Zhihu, WeChat, cross-platform publishing, scheduling,
+  analytics, postmortems, video/audio/image processing and asset management.
+  They are indexed at build time from `core/src/main/resources/skills/`.
+- **Sandbox media**: the bundled Alpine runtime now includes `ffmpeg`, so the
+  phone can transcode, crop, reframe, extract audio and burn subtitles offline.
 - **App identity**: label `Easel`, application id `com.easel.mobile`.
 
 ## Build on GitHub
@@ -59,23 +72,26 @@ back to the user.
 
 ## Milestones
 
-- P0 complete: phone-only Android host with Mika's accessibility, browser and
+- M0 complete (internal engineering milestone): phone-only Android host with Mika's accessibility, browser and
   sandbox capabilities, plus the Easel identity and content profile.
-- P1 complete: native content calendar and publishing log in app-private files,
+- M1 complete: native content calendar and publishing log in app-private files,
   exposed as `content_plan_*` and `content_publish_log_*`.
-- P2 complete: native WebView card renderer, `render_card`, and the
+- M2 complete: native WebView card renderer, `render_card`, and the
   `card-design` / `card-quote` skills. No Playwright, Chromium download or CDN
   fonts are needed.
+- P1 complete (product roadmap): five-stage workflow MVP, content calendar,
+  material library, publish center, 30-40 high-frequency skills, WebView card
+  rendering, and bundled ffmpeg. Real-device publishing still needs a final
+  acceptance pass on the user's phone.
 
 ## Next milestones
 
-- Port the remaining Easel skills (video, analytics) to Mika's phone/web/sandbox
-  tool semantics.
-- Add ffmpeg and media scripts to the bundled sandbox rootfs.
 - Map Easel's 6-file profile format to the single mobile profile file, or split
   it into sections in a later schema migration.
 - Verify card rendering on real Android 12/14/15 devices, including system font
   fallback and VirtualDisplay behavior under battery saver.
+- P2: grow from 39 skills to the full 115-skill catalog, add data attribution,
+  audio/video pipelines, platform-specific adaptation and risk controls.
 
 ## Licensing
 

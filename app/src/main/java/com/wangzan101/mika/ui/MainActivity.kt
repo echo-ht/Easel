@@ -342,11 +342,20 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
         }
         Route.Easel -> EaselScreen(
             onBack = back,
+            onOpenWorkflow = { nav.push(Route.EaselWorkflow) },
             onOpenCalendar = { nav.push(Route.EaselCalendar) },
             onOpenPublishLog = { nav.push(Route.EaselPublishLog) },
+            onOpenMaterials = { nav.push(Route.EaselMaterials) },
+        )
+        Route.EaselWorkflow -> EaselWorkflowScreen(
+            onBack = back,
+            onOpenCalendar = { nav.push(Route.EaselCalendar) },
+            onOpenPublishCenter = { nav.push(Route.EaselPublishLog) },
+            onOpenMaterials = { nav.push(Route.EaselMaterials) },
         )
         Route.EaselCalendar -> EaselCalendarScreen(onBack = back)
         Route.EaselPublishLog -> EaselPublishLogScreen(onBack = back)
+        Route.EaselMaterials -> EaselMaterialsScreen(onBack = back)
         Route.Settings -> {
             val registry = remember { WebSites.registry(context) }
             val sites by registry.entries.collectAsState()

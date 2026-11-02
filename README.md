@@ -105,7 +105,7 @@ The names are shown as they appear in the knowledge files.
 |---|---|
 | **Apps** | Android 设置, 百家号, 哔哩哔哩, BOSS直聘, Chrome, 得到, 抖音, 飞书, Gmail, 即刻, 快手, 领英, QQ邮箱, Telegram, 今日头条, Uber, Uber Eats, 微信, 微博, WhatsApp, 闲鱼, 小红书, 知乎 |
 | **Websites** | Amazon, 哔哩哔哩, Google Calendar, 豆瓣, 抖音, Instagram, Gmail, Google Maps, Telegram, 百度贴吧, 微博, 搜狗微信, WhatsApp, 小红书, 小宇宙, YouTube, 知乎, BOSS直聘 |
-| **How-to skills** | 卡片设计系统, 横版金句卡, 改 Mika 自己的设置, 账号画像, 把内容整理成文字, 内容工作流, 处理 PDF 文档, 查清一件事, 消息与邮件, 写技能, 小红书发布 |
+| **How-to skills** | 素材管理, 音频处理, 视频字幕, B站发布, 卡片设计系统, 横版金句卡, 竞品分析, 改 Mika 自己的设置, 内容缺口分析, 账号画像, 一稿多用, 内容策略, 把内容整理成文字, 内容工作流, 营销文案, 多平台发布, 数据回读, 处理 PDF 文档, 抖音发布, 标题钩子, 图片处理, 查清一件事, 快手发布, 消息与邮件, 平台排版, 内容复盘, 发布前检查, 发布排期, 写技能, 文案润色, 热点选题, 视频改画幅, 视频脚本, 公众号发布, 小红书分析, 小红书评论回复, 小红书笔记, 小红书发布, 知乎发布 |
 <!-- generated:knowledge:end -->
 
 </details>

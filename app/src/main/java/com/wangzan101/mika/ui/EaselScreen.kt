@@ -42,9 +42,15 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 
-/** Easel 的内容工作台:账号画像、内容规划入口与内容库。 */
+/** Easel 的内容工作台:账号画像、五层工作流、发布中心与素材库。 */
 @Composable
-fun EaselScreen(onBack: () -> Unit, onOpenCalendar: () -> Unit = {}, onOpenPublishLog: () -> Unit = {}) {
+fun EaselScreen(
+    onBack: () -> Unit,
+    onOpenWorkflow: () -> Unit = {},
+    onOpenCalendar: () -> Unit = {},
+    onOpenPublishLog: () -> Unit = {},
+    onOpenMaterials: () -> Unit = {},
+) {
     BackHandler(onBack = onBack)
     val context = LocalContext.current
     val store = remember { EaselProfileStore(context) }
@@ -93,7 +99,19 @@ fun EaselScreen(onBack: () -> Unit, onOpenCalendar: () -> Unit = {}, onOpenPubli
             color = MikaTheme.colors.ink3,
         )
 
-        GroupLabel("内容规划")
+        GroupLabel("五层工作流")
+        GroupCard {
+            ListRow(
+                icon = MikaIcons.Lines,
+                title = "发现 → 策划 → 制作 → 发布 → 归因",
+                subtitle = "看每一层现在有多少内容，复制下一步指令",
+                first = true,
+                onClick = onOpenWorkflow,
+                trailing = { RowChevron() },
+            )
+        }
+
+        GroupLabel("发布中心")
         GroupCard {
             ListRow(
                 icon = MikaIcons.Clock,
@@ -106,7 +124,7 @@ fun EaselScreen(onBack: () -> Unit, onOpenCalendar: () -> Unit = {}, onOpenPubli
             ListRow(
                 icon = MikaIcons.Lines,
                 title = "发布记录",
-                subtitle = "已发布与失败的真实结果，带平台、时间和链接",
+                subtitle = "待发布队列、已发布与失败的真实结果",
                 onClick = onOpenPublishLog,
                 trailing = { RowChevron() },
             )
@@ -117,10 +135,20 @@ fun EaselScreen(onBack: () -> Unit, onOpenCalendar: () -> Unit = {}, onOpenPubli
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            GroupLabel("内容库")
+            GroupLabel("素材库")
             IconButton(onClick = { refresh++ }) {
                 Icon(MikaIcons.Refresh, "刷新", Modifier.size(MikaSize.SmallIcon), tint = MikaTheme.colors.ink3)
             }
+        }
+        GroupCard {
+            ListRow(
+                icon = MikaIcons.Plus,
+                title = "打开素材库",
+                subtitle = "导入、预览、分享和删除图片、视频、音频和文档",
+                first = true,
+                onClick = onOpenMaterials,
+                trailing = { RowChevron() },
+            )
         }
         if (loading) {
             Text("正在读取…", Modifier.padding(horizontal = 16.dp, vertical = 12.dp), style = MikaType.Caption, color = MikaTheme.colors.ink3)
@@ -152,7 +180,7 @@ fun EaselScreen(onBack: () -> Unit, onOpenCalendar: () -> Unit = {}, onOpenPubli
             }
         }
         Text(
-            "成品由 Agent 通过 share_file 导出到手机的「下载/Easel」。点一行预览，点分享发给其他 App。",
+            "成品由 Agent 通过 share_file 导出到手机的「下载/Easel」。素材库只读取本 App 创建的文件，不会扫描手机里的其他内容。",
             Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 24.dp),
             style = MikaType.Hint,
             color = MikaTheme.colors.ink3,

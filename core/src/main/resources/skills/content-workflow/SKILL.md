@@ -23,13 +23,23 @@ terms: ["内容", "选题", "文案", "笔记", "发布", "复盘", "账号", "�
 
 1. 读账号画像。画像在「内容工作台」里，包含定位、风格、受众、平台、偏好和红线。用户当前的话优先于画像。
    需要跨天安排、记住选题或回看已发布内容时，读本机内容日历和发布记录：`content_plan_list`、`content_publish_log_list`。
+   手机上「内容工作台 → 五层工作流」会显示每一层当前的数量；「发布中心」列出待发布队列，「素材库」管理导入和导出的文件。
 2. 用 `skill_search` 找最接近的技能；有就 `skill_read` 后按它的流程做。没有精确匹配就用最接近的，不要凭记忆裸做。
 3. 开工前确认：平台、账号、主题、内容形式、目标受众、规格、风格、红线、输出到哪里。能从画像或历史产物推断的就不要重复问。
    用户要排期或跨会话推进时，用 `content_plan_add` 记下计划和阶段；只有用户明确要排期时才写日期。
-4. 制作层把中间素材放 `/workspace` 的子目录，成品放清楚命名的文件；交付前检查文件存在、非空、时长/分辨率/画幅/字数符合要求。
+4. 制作层把中间素材放 `/workspace` 的子目录，成品放清楚命名的文件；需要用户复用的素材用 `share_file` 导出到素材库。交付前检查文件存在、非空、时长/分辨率/画幅/字数符合要求。
    做金句卡、数据卡或其他 HTML 卡片时，读 `card-design` 和对应的卡片技能，写自包含 HTML，再用 `render_card` 出 PNG；按返回的版式审计改到通过。
+   视频和音频处理可读 `video-script`、`auto-subtitle`、`video-reframe`、`audio-editing`、`image-editing`；沙箱自带 ffmpeg 和 Pillow，命令都在 `/workspace` 里跑。
 5. 成品用 `share_file` 交给用户；在手机上需要发布时，转到发布技能并用手机自动化完成。
-6. 发布后在 App 或页面里核实结果。成功或失败都用 `content_publish_log_add` 记下发⽣的事实；不要提前把计划写成已发布。
+6. 发布后在 App 或页面里核实结果。成功或失败都用 `content_publish_log_add` 记下发生的事实；不要提前把计划写成已发布。
+
+## 常用技能分工
+
+- 文案：`copywriting`、`text-polisher`、`hook-title`、`post-formatter`。
+- 小红书：`xhs-note`、`xhs-analysis`、`xhs-comment-reply`、`xhs-publish`。
+- 其他平台：`douyin-publish`、`kuaishou-publish`、`bilibili-publish`、`zhihu-publish`、`wechat-publish`、`cross-platform-publish`。
+- 策划和复盘：`content-strategy`、`trending-topics`、`competitor-analysis`、`content-gap-analysis`、`publish-scheduler`、`data-tracker`、`postmortem`。
+- 制作：`card-design`、`card-quote`、`video-script`、`auto-subtitle`、`video-reframe`、`audio-editing`、`image-editing`、`asset-manager`。
 
 ## 容易出错的地方
 

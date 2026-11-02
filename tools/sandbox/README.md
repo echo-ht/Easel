@@ -13,7 +13,7 @@ Mika 只以子进程方式运行它们,不链接它们。
 
 ## 自带的运行环境
 
-运行环境(Alpine 3.22 最小根文件系统 + Python、Node 等软件包)随 APK 发布,在
+运行环境(Alpine 3.22 最小根文件系统 + Python、Node、ffmpeg 等软件包)随 APK 发布,在
 `app/src/main/assets/runtime/rootfs.tar.xz`。手机首次启动 Mika 时在后台解到 `files/sandbox/rootfs`,不联网。
 
 - `runtime/sources.lock`:最小根文件系统的地址与 SHA-256,以及每个软件包的仓库、版本、APKINDEX 校验值、`.apk` 的 SHA-256。

@@ -519,7 +519,8 @@ The phone keeps a local content calendar and a publishing log. They survive app 
 - Use the calendar for work the user wants to do later or across several sessions. A one-off draft request does not need a calendar entry unless the user asks for one.
 - After a real publish, call content_publish_log_add with the confirmed title, platform and link if available. If publishing failed, record it as failed with the confirmed reason instead of pretending it went out.
 - The publishing log is evidence of what happened, not a queue. Do not write a planned post into the log before it is actually published.
-- The user sees both lists in 内容工作台 on the phone. Keep entries short enough to scan on a small screen.
+- The user sees a five-stage workflow (discover, plan, create, publish, attribute), a publish center with the ready queue, and a material library in 内容工作台 on the phone. Keep entries short enough to scan on a small screen.
+- Ready and scheduled plans are the publishing queue. Publish them one at a time, verify each in the app, then record the result. Never mark several plans published from one confirmation.
 
 ## Local card rendering
 
